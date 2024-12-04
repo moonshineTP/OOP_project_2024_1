@@ -1,0 +1,35 @@
+package graph_element;
+
+import java.util.LinkedList;
+
+public class KOL extends User{
+      /// More identifier attributes
+      public String url;
+      public String username;
+
+      /// Statistic attributes
+      public boolean is_verified;
+      public int following_count;
+      public int follower_count;
+
+      /// More adjacency attribute
+      public LinkedList<Long> following_kol_handle_list;
+
+      public KOL (String handle, String url, String username,
+            boolean is_verified, int following_count, int follower_count)
+      {
+            super(handle);
+            this.url = url;
+            this.username = username;
+            this.is_verified = is_verified;
+            this.following_count = following_count;
+            this.follower_count = follower_count;
+            this.following_kol_handle_list = new LinkedList<>();
+      }
+
+      public static KOL createKOLProfile (String handle, String url, String username,
+           boolean is_verified, int following_count, int follower_count)
+      {
+            return new KOL (handle, url, username, is_verified, following_count, follower_count);
+      }
+}
