@@ -5,8 +5,6 @@ package data.constant;
  */
 
 public class Constant {
-      // url
-
       // file path
       public static final String CHROMEDRIVER_PATH
             = "C:\\Users\\admin\\OneDrive\\Máy tính\\chromedriver.exe";
@@ -20,7 +18,6 @@ public class Constant {
       public static final int BIG_WAIT_TIME = 2500;
       public static final int MEDIUM_WAIT_TIME = 750;
       public static final int SMALL_WAIT_TIME = 250;
-      public static final int TINY_WAIT_TIME = 75;
 
       // Epoch timestamp
       public static final String START_TIMESTAMP = "12:00 AM · Jun 01, 2024";
