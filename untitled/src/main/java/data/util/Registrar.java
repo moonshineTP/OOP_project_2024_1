@@ -28,7 +28,7 @@ public class Registrar {
                         )
                   );
                   Sleeper.sleep(Constant.SMALL_WAIT_TIME);
-                  element.sendKeys("moonshinetpemail@gmail.com\n");
+                  element.sendKeys("giahung260305@gmail.com\n");
                   System.out.println("Email entered");
 
             } catch (Exception e) {
@@ -47,7 +47,7 @@ public class Registrar {
                         )
                   );
                   Sleeper.sleep(Constant.SMALL_WAIT_TIME);
-                  element.sendKeys("meo_bach_duong\n");
+                  element.sendKeys("0905673007\n");
                   System.out.println("Username entered");
 
             } catch (Exception e) {

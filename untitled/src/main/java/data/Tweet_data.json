@@ -130,5 +130,60 @@
             "comment_count": 46,
             "repost_count": 42,
             "bookmark_count": 10
+      },
+      "1865226747144442284": {
+            "id": "1865226747144442284",
+            "url": "https://x.com/0xSonicLabs/status/1865226747144442284",
+            "author": "@0xSonicLabs",
+            "timestamp": "9:48 AM · Dec 7, 2024",
+            "view_count": 22900,
+            "like_count": 661,
+            "comment_count": 50,
+            "repost_count": 108,
+            "bookmark_count": 3
+      },
+      "1865128227636904397": {
+            "id": "1865128227636904397",
+            "url": "https://x.com/0xSonicLabs/status/1865128227636904397",
+            "author": "@0xSonicLabs",
+            "timestamp": "3:16 AM · Dec 7, 2024",
+            "view_count": 34300,
+            "like_count": 615,
+            "comment_count": 56,
+            "repost_count": 74,
+            "bookmark_count": 3
+      },
+      "1865123612279333317": {
+            "id": "1865123612279333317",
+            "url": "https://x.com/0xSonicLabs/status/1865123612279333317",
+            "author": "@0xSonicLabs",
+            "timestamp": "2:58 AM · Dec 7, 2024",
+            "view_count": 32100,
+            "like_count": 669,
+            "comment_count": 50,
+            "repost_count": 71,
+            "bookmark_count": 3
+      },
+      "1865071630742949891": {
+            "id": "1865071630742949891",
+            "url": "https://x.com/0xSonicLabs/status/1865071630742949891",
+            "author": "@0xSonicLabs",
+            "timestamp": "11:31 PM · Dec 6, 2024",
+            "view_count": 56800,
+            "like_count": 1400,
+            "comment_count": 167,
+            "repost_count": 211,
+            "bookmark_count": 7
+      },
+      "1865062286123033009": {
+            "id": "1865062286123033009",
+            "url": "https://x.com/0xSonicLabs/status/1865062286123033009",
+            "author": "@0xSonicLabs",
+            "timestamp": "10:54 PM · Dec 6, 2024",
+            "view_count": 33900,
+            "like_count": 919,
+            "comment_count": 52,
+            "repost_count": 93,
+            "bookmark_count": 11
       }
 }

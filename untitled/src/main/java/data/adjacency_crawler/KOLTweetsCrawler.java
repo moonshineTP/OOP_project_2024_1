@@ -23,11 +23,11 @@ import java.util.List;
 
 public class KOLTweetsCrawler extends Crawler {
       /// ____Constant____ ///
-      private static final int TWEET_COUNT_LIMIT = 10;
+      private static final int TWEET_COUNT_LIMIT = 5;
       private static final int FAIL_COUNT_LIMIT = 10;
 
       /// ____Field____ ///
-      private TweetCrawler one_tweet_crawler;
+      private TweetCrawler tweet_crawler;
       private WebDriverWait wait;
       private JavascriptExecutor js_executor;
 
@@ -36,7 +36,7 @@ public class KOLTweetsCrawler extends Crawler {
                               JsonObject user_data_jsonObject, JsonObject tweet_data_jsonObject) {
             super(driver, gson, target_jsonObject);
 
-            one_tweet_crawler = new TweetCrawler(driver, gson, target_jsonObject,
+            tweet_crawler = new TweetCrawler(driver, gson, target_jsonObject,
                   user_data_jsonObject, tweet_data_jsonObject);
             wait = new WebDriverWait(driver, Duration.ofMillis(Constant.HUGE_WAIT_TIME));
             js_executor = (JavascriptExecutor) driver;
@@ -115,11 +115,11 @@ public class KOLTweetsCrawler extends Crawler {
                   // navigate to the inspected div
                   js_executor.executeScript("document.elementFromPoint"
                         + "(arguments[0], arguments[1]).click();", 360, 80);
-                  Sleeper.sleep(2 * Constant.MEDIUM_WAIT_TIME);
+                  Sleeper.sleep(Constant.BIG_WAIT_TIME);
 
                   // crawl the tweet
-                  boolean crawl_state = one_tweet_crawler.crawl();
-                  one_tweet_crawler.navigateBack();
+                  boolean crawl_state = tweet_crawler.crawl();
+                  tweet_crawler.navigateBack();
 
                   // update and check for break
                   if (crawl_state) {
@@ -131,7 +131,6 @@ public class KOLTweetsCrawler extends Crawler {
                   }
 
                   /// Prepare for the next div
-                  one_tweet_crawler.navigateBack();
                   js_executor.executeScript(STR."window.scrollBy(0, \{tweet_height});");
                   Sleeper.sleep(Constant.SMALL_WAIT_TIME);
             }

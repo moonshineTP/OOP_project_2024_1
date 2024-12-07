@@ -62,12 +62,12 @@ public class TweetEngagementCrawler extends Crawler {
             // click the quote button
             js_executor.executeScript("document.elementFromPoint"
                   + "(arguments[0], arguments[1]).click();", 540, 90);
-            Sleeper.sleep(Constant.TINY_WAIT_TIME);
+            Sleeper.sleep(Constant.SMALL_WAIT_TIME);
 
             // click to view quote
             js_executor.executeScript("document.elementFromPoint"
                   + "(arguments[0], arguments[1]).click();", 540, 150);
-            Sleeper.sleep(Constant.MEDIUM_WAIT_TIME);
+            Sleeper.sleep(Constant.BIG_WAIT_TIME);
       }
 
       public void navigateToRepostListFromQuoteList() {
@@ -79,10 +79,8 @@ public class TweetEngagementCrawler extends Crawler {
       }
 
       public void navigateBackToCommentList() {
-            driver.navigate().back();
-            Sleeper.sleep(Constant.MEDIUM_WAIT_TIME);
-
-            driver.navigate().back();
+            navigateBack();
+            navigateBack();
             Sleeper.sleep(Constant.MEDIUM_WAIT_TIME);
       }
 
