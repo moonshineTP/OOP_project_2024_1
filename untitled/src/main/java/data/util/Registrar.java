@@ -1,11 +1,9 @@
 package data.util;
 
-import constant.TimeConstant;
+import data.constant.Constant;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -19,7 +17,7 @@ public class Registrar {
       public static void register(WebDriver driver) {
             System.out.println("/// ________Registering________ ///");
             /// ____Initialize wait and element____ ///
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofMillis(TimeConstant.HUGE_WAIT_TIME));
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofMillis(Constant.HUGE_WAIT_TIME));
             WebElement element;
 
             /// Enter email
@@ -29,7 +27,7 @@ public class Registrar {
                               By.name("text")
                         )
                   );
-                  Thread.sleep(Duration.ofMillis(TimeConstant.SMALL_WAIT_TIME));
+                  Sleeper.sleep(Constant.SMALL_WAIT_TIME);
                   element.sendKeys("moonshinetpemail@gmail.com\n");
                   System.out.println("Email entered");
 
@@ -48,7 +46,7 @@ public class Registrar {
                               By.name("text")
                         )
                   );
-                  Thread.sleep(Duration.ofMillis(TimeConstant.SMALL_WAIT_TIME));
+                  Sleeper.sleep(Constant.SMALL_WAIT_TIME);
                   element.sendKeys("meo_bach_duong\n");
                   System.out.println("Username entered");
 
@@ -63,17 +61,14 @@ public class Registrar {
                               By.name("password")
                         )
                   );
-                  Thread.sleep(Duration.ofMillis(TimeConstant.SMALL_WAIT_TIME));
+                  Sleeper.sleep(Constant.SMALL_WAIT_TIME);
                   element.sendKeys("112358132134gh.\n");
                   System.out.println("Password entered");
             } catch (Exception e) {
                   throw new RuntimeException("Enter password unsuccessfully");
             }
 
-            /// Wait until register completed
-            PageWait.wait(wait);
-
-            Sleeper.sleep(TimeConstant.MEDIUM_WAIT_TIME);
+            Sleeper.sleep(Constant.HUGE_WAIT_TIME);
             System.out.println("Registered successfully!");
             System.out.println();
       }

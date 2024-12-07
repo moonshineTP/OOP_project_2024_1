@@ -1,5 +1,43 @@
 {
       "KOL": {
+            "@0xSonicLabs": {
+                  "url": "https://x.com/0xSonicLabs",
+                  "username": "Sonic Labs (prev. Fantom) ",
+                  "is_verified": true,
+                  "following_count": 367,
+                  "follower_count": 769800,
+                  "following_kol_handle_list": [],
+                  "handle": "@0xSonicLabs",
+                  "quote_tweet_id_list": [],
+                  "repost_tweet_id_list": [],
+                  "comment_tweet_id_list": []
+            },
+            "@SolanaStatus": {
+                  "url": "https://x.com/SolanaStatus",
+                  "username": "Solana Status",
+                  "is_verified": true,
+                  "following_count": 4,
+                  "follower_count": 126400,
+                  "following_kol_handle_list": [],
+                  "handle": "@SolanaStatus",
+                  "quote_tweet_id_list": [],
+                  "repost_tweet_id_list": [],
+                  "comment_tweet_id_list": []
+            },
+            "@Neo_Blockchain": {
+                  "url": "https://x.com/Neo_Blockchain",
+                  "username": "Neo Smart Economy",
+                  "is_verified": true,
+                  "following_count": 166,
+                  "follower_count": 421900,
+                  "following_kol_handle_list": [
+                        "@ethereum"
+                  ],
+                  "handle": "@Neo_Blockchain",
+                  "quote_tweet_id_list": [],
+                  "repost_tweet_id_list": [],
+                  "comment_tweet_id_list": []
+            },
             "@blockchain": {
                   "url": "https://x.com/blockchain",
                   "username": "Blockchain.com",
@@ -8,8 +46,9 @@
                   "follower_count": 1300000,
                   "following_kol_handle_list": [],
                   "handle": "@blockchain",
-                  "comment_tweet_id_list": [],
-                  "repost_tweet_id_list": []
+                  "quote_tweet_id_list": [],
+                  "repost_tweet_id_list": [],
+                  "comment_tweet_id_list": []
             },
             "@ethereum": {
                   "url": "https://x.com/ethereum",
@@ -19,74 +58,69 @@
                   "follower_count": 3500000,
                   "following_kol_handle_list": [],
                   "handle": "@ethereum",
-                  "comment_tweet_id_list": [],
-                  "repost_tweet_id_list": []
-            },
-            "@Neo_Blockchain": {
-                  "url": "https://x.com/Neo_Blockchain",
-                  "username": "Neo Smart Economy",
-                  "is_verified": true,
-                  "following_count": 166,
-                  "follower_count": 421200,
-                  "following_kol_handle_list": [],
-                  "handle": "@Neo_Blockchain",
-                  "comment_tweet_id_list": [],
-                  "repost_tweet_id_list": []
-            },
-            "@SolanaStatus": {
-                  "url": "https://x.com/SolanaStatus",
-                  "username": "Solana Status",
-                  "is_verified": true,
-                  "following_count": 4,
-                  "follower_count": 126000,
-                  "following_kol_handle_list": [],
-                  "handle": "@SolanaStatus",
-                  "comment_tweet_id_list": [],
-                  "repost_tweet_id_list": []
-            },
-            "@CTXCBlockchain": {
-                  "url": "https://x.com/CTXCBlockchain",
-                  "username": "Cortex Labs",
-                  "is_verified": true,
-                  "following_count": 165,
-                  "follower_count": 53500,
-                  "following_kol_handle_list": [],
-                  "handle": "@CTXCBlockchain",
-                  "comment_tweet_id_list": [],
-                  "repost_tweet_id_list": []
+                  "quote_tweet_id_list": [],
+                  "repost_tweet_id_list": [],
+                  "comment_tweet_id_list": []
             },
             "@ice_blockchain": {
                   "url": "https://x.com/ice_blockchain",
                   "username": "Ice Open Network",
                   "is_verified": true,
-                  "following_count": 106,
-                  "follower_count": 2600000,
+                  "following_count": 109,
+                  "follower_count": 2800000,
                   "following_kol_handle_list": [],
                   "handle": "@ice_blockchain",
-                  "comment_tweet_id_list": [],
-                  "repost_tweet_id_list": []
+                  "quote_tweet_id_list": [],
+                  "repost_tweet_id_list": [],
+                  "comment_tweet_id_list": []
             },
-            "@Chiliz": {
-                  "url": "https://x.com/Chiliz",
-                  "username": "Chiliz - The Sports Blockchain ",
+            "@CeBioLabs": {
+                  "url": "https://x.com/CeBioLabs",
+                  "username": "CeBioLabs $CBSL - #Blockchain meets #Cannabis",
                   "is_verified": true,
-                  "following_count": 905,
-                  "follower_count": 526600,
+                  "following_count": 14,
+                  "follower_count": 10300,
                   "following_kol_handle_list": [],
-                  "handle": "@Chiliz",
-                  "comment_tweet_id_list": [],
-                  "repost_tweet_id_list": []
+                  "handle": "@CeBioLabs",
+                  "quote_tweet_id_list": [],
+                  "repost_tweet_id_list": [],
+                  "comment_tweet_id_list": []
             },
-            "@vexanium": {
-                  "url": "https://x.com/vexanium",
-                  "username": "Vexanium Blockchain Foundation",
+            "@WuBlockchain": {
+                  "url": "https://x.com/WuBlockchain",
+                  "username": "Wu Blockchain",
                   "is_verified": true,
-                  "following_count": 457,
-                  "follower_count": 12800,
+                  "following_count": 984,
+                  "follower_count": 497100,
                   "following_kol_handle_list": [],
-                  "handle": "@vexanium",
-                  "comment_tweet_id_list": [],
-                  "repost_tweet_id_list": []
+                  "handle": "@WuBlockchain",
+                  "quote_tweet_id_list": [],
+                  "repost_tweet_id_list": [],
+                  "comment_tweet_id_list": []
+            },
+            "@Wire_Blockchain": {
+                  "url": "https://x.com/Wire_Blockchain",
+                  "username": "Wire Network ",
+                  "is_verified": true,
+                  "following_count": 230,
+                  "follower_count": 11400,
+                  "following_kol_handle_list": [],
+                  "handle": "@Wire_Blockchain",
+                  "quote_tweet_id_list": [],
+                  "repost_tweet_id_list": [],
+                  "comment_tweet_id_list": []
+            },
+            "@BlockchainAssn": {
+                  "url": "https://x.com/BlockchainAssn",
+                  "username": "Blockchain Association",
+                  "is_verified": true,
+                  "following_count": 694,
+                  "follower_count": 36400,
+                  "following_kol_handle_list": [],
+                  "handle": "@BlockchainAssn",
+                  "quote_tweet_id_list": [],
+                  "repost_tweet_id_list": [],
+                  "comment_tweet_id_list": []
             }
       },
       "Non-KOL": {}

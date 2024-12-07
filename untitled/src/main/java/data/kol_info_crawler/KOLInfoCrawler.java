@@ -1,4 +1,4 @@
-package data.info_crawler;
+package data.kol_info_crawler;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -13,10 +13,9 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 import java.util.List;
 
-import data.FilePath;
 import data.Crawler;
-import constant.TimeConstant;
-import converter.ConvertTwitterCount;
+import data.constant.Constant;
+import data.util.ConvertTwitterCount;
 import graph_element.KOL;
 
 
@@ -33,7 +32,6 @@ public class KOLInfoCrawler extends Crawler {
 
       /// ____Constant____ ///
       // limit constants
-      private static final int MAX_KOL = 20;
       private static final int MAX_PROFILE_PER_SESSION = 14;
       private static final int MAX_FAIL = 6;
       private static final int MIN_KOL_FOLLOWER = 10000;
@@ -52,7 +50,7 @@ public class KOLInfoCrawler extends Crawler {
       public KOLInfoCrawler(WebDriver driver, Gson gson, JsonObject target_jsonObject) {
             super(driver, gson, target_jsonObject);
             js_executor = (JavascriptExecutor) driver;
-            wait = new WebDriverWait(driver, Duration.ofMillis(TimeConstant.HUGE_WAIT_TIME));
+            wait = new WebDriverWait(driver, Duration.ofMillis(Constant.HUGE_WAIT_TIME));
             mouse = new Actions(driver);
       }
 
@@ -64,7 +62,7 @@ public class KOLInfoCrawler extends Crawler {
        */
       public static void main(String[] args) {
             /// Read the file
-            JsonObject root_jsonObject = CustomJsonReader.read(FilePath.USER_DATA_FILE_PATH);
+            JsonObject root_jsonObject = CustomJsonReader.read(Constant.USER_DATA_FILE_PATH);
             JsonObject kol_map_jsonObject = root_jsonObject.getAsJsonObject("KOL");
             kol_map_jsonObject.entrySet().clear();
 
@@ -76,20 +74,26 @@ public class KOLInfoCrawler extends Crawler {
             crawler.crawl();
 
             /// Write the file
-            CustomJsonWriter.write(root_jsonObject, FilePath.USER_DATA_FILE_PATH);
+            CustomJsonWriter.write(root_jsonObject, Constant.USER_DATA_FILE_PATH);
       }
 
 
       /// ____Helper method____ ///
       @Override
       public void navigate() {
-            System.out.println("/// ________Navigate to the search page________ ///");
-            driver.navigate().to(MAIN_URL);
-            Registrar.register(driver);
+            System.out.println("/// ________Navigate to the search page________ ///\n");
+            try {
+                  driver.navigate().to(MAIN_URL);
+                  Registrar.register(driver);
+
+            } catch (Exception e) {
+                  throw new RuntimeException("Navigate unsuccessfully");
+            }
+
       }
 
       @Override
-      public void crawl () {
+      public boolean crawl () {
             System.out.println("/// ________Crawl KOL Attributes________ ///");
 
             /// Inspect if the page is loaded
@@ -99,7 +103,7 @@ public class KOLInfoCrawler extends Crawler {
                   )
             );
 
-            /// loop
+            /// Loop
             /*
                   We use a loop to crawl data until the KOL count get around MAX_KOL
                   Each time, we scroll to load the list of profile divs (tagged "cellInnerDiv")
@@ -108,9 +112,9 @@ public class KOLInfoCrawler extends Crawler {
             int prev_KOL_count = 0, contiguous_fail_count = 0;
             int session_count = 1;
 
-            for (int KOL_count = 0; KOL_count < MAX_KOL - MAX_PROFILE_PER_SESSION; ) {
+            for (int KOL_count = 0; KOL_count < Constant.KOL_LIMIT; ) {
                   // print current session info
-                  System.out.println(STR."Session \{session_count}:");
+                  System.out.println(STR."/// Session \{session_count} ///");
                   session_count++;
 
                   /// Get data
@@ -153,10 +157,11 @@ public class KOLInfoCrawler extends Crawler {
                   js_executor.executeScript(STR."window.scrollBy(0, \{CRAWL_SESSION_SCROLL_LENGTH});");
 
                   /// Sleep a little bit
-                  Sleeper.sleep(TimeConstant.MEDIUM_WAIT_TIME);
+                  Sleeper.sleep(Constant.MEDIUM_WAIT_TIME);
             }
 
             System.out.println("/// ________KOL attributes extracted successfully________ ///");
+            return true;
       }
 
 
@@ -213,7 +218,7 @@ public class KOLInfoCrawler extends Crawler {
        */
       private boolean getOneProfileData (WebElement profile) {
             // find usernameElement
-            Sleeper.sleep(TimeConstant.MEDIUM_WAIT_TIME);
+            Sleeper.sleep(Constant.MEDIUM_WAIT_TIME);
             WebElement usernameElement = profile.findElement(
                   By.cssSelector("[class='css-175oi2r r-1wbh5a2 r-dnmrzs r-1ny4l3l r-1loqt21']")
             );

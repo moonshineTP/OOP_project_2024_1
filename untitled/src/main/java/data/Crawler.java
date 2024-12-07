@@ -2,6 +2,8 @@ package data;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import data.constant.Constant;
+import data.util.Sleeper;
 import org.openqa.selenium.WebDriver;
 
 /**
@@ -25,6 +27,10 @@ public abstract class Crawler {
             this.target_jsonObject = target_jsonObject;
       }
 
-      public abstract void navigate ();
-      public abstract void crawl ();
+      public void navigate () {}
+      public abstract boolean crawl ();
+      public void navigateBack () {
+            driver.navigate().back();
+            Sleeper.sleep(Constant.SMALL_WAIT_TIME);
+      }
 }

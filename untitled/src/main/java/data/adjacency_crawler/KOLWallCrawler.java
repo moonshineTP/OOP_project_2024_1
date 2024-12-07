@@ -7,21 +7,25 @@ import data.util.Sleeper;
 import org.openqa.selenium.WebDriver;
 
 import data.Crawler;
-import constant.TimeConstant;
+import data.constant.Constant;
 
+/**
+ * This class is used to crawls all the data of a user's wall
+ */
 
 public class KOLWallCrawler extends Crawler {
-      private JsonObject user_jsonObject;
-      private JsonObject tweet_jsonObject;
+      /// ____Field____ ///
+      private JsonObject user_data_jsonObject;
+      private JsonObject tweet_data_jsonObject;
 
 
       /// ____Constructor____ ///
       public KOLWallCrawler(WebDriver driver, Gson gson,
-                            JsonObject user_jsonObject, JsonObject tweet_jsonObject)
+                            JsonObject user_data_jsonObject, JsonObject tweet_data_jsonObject)
       {
             super(driver, gson);
-            this.user_jsonObject = user_jsonObject;
-            this.tweet_jsonObject = tweet_jsonObject;
+            this.user_data_jsonObject = user_data_jsonObject;
+            this.tweet_data_jsonObject = tweet_data_jsonObject;
       }
 
 
@@ -29,21 +33,24 @@ public class KOLWallCrawler extends Crawler {
       @Override
       public void navigate() {
             String url = target_jsonObject.get("url").getAsString();
-            System.out.println(STR."/// Navigate to \{target_jsonObject.get("handle").getAsString()} ///");
+            System.out.println(STR."/// ____Navigate to \{target_jsonObject.get("handle").getAsString()}____ ///");
             driver.navigate().to(url);
-            Sleeper.sleep(TimeConstant.BIG_WAIT_TIME);
+
+            Sleeper.sleep(Constant.BIG_WAIT_TIME);
       }
 
       @Override
-      public void crawl() {
-            System.out.println(STR."/// Crawl adjacency of \{target_jsonObject.get("handle").getAsString()} ///");
+      public boolean crawl() {
+            System.out.println("/// ____Crawl adjacency of " + target_jsonObject.get("handle").getAsString() + "____ ///");
+            System.out.println("-----------------------------------------------");
+            System.out.println();
 
             /// Set up crawlers
-            JsonObject kol_map_jsonObject = user_jsonObject.getAsJsonObject("KOL");
-            FollowingKOLCrawler follow_crawler = new FollowingKOLCrawler
+            JsonObject kol_map_jsonObject = user_data_jsonObject.getAsJsonObject("KOL");
+            KOLFollowingCrawler follow_crawler = new KOLFollowingCrawler
                   (driver, gson, target_jsonObject, kol_map_jsonObject);
-            TweetsCrawler tweets_crawler = new TweetsCrawler
-                  (driver, gson, target_jsonObject, user_jsonObject, tweet_jsonObject);
+            KOLTweetsCrawler tweets_crawler = new KOLTweetsCrawler
+                  (driver, gson, target_jsonObject, user_data_jsonObject, tweet_data_jsonObject);
 
             /// Crawl following KOL
 //            follow_crawler.navigate();
@@ -53,8 +60,8 @@ public class KOLWallCrawler extends Crawler {
             /// Crawl tweets
             tweets_crawler.crawl();
 
-            System.out.println("/// Crawl successfully! ///");
-            System.out.println();
+            System.out.println("/// ____KOL crawled successfully____ ///\n");
+            return true;
       }
 
       public void setTarget (JsonObject kol_jsonObject) {
