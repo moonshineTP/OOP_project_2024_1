@@ -57,7 +57,7 @@ public class TweetEngagementCrawler extends Crawler {
             } else distance_to_top = (long) distance_to_top_object;
 
             // scroll exactly to the board
-            js_executor.executeScript(STR."window.scrollBy(0, \{distance_to_top - 46});");
+            js_executor.executeScript("window.scrollBy(0, " + (distance_to_top - 46) + ");");
             Sleeper.sleep(Constant.MEDIUM_WAIT_TIME);
 
             // click the quote button
@@ -105,7 +105,7 @@ public class TweetEngagementCrawler extends Crawler {
             // remove the author's handle
             quote_handle_set.remove(target_jsonObject.get("handle").getAsString());
             // announce the result
-            System.out.println(STR."- \{quote_handle_set.size()} quotes crawled");
+            System.out.println("- " + quote_handle_set.size() + " quotes crawled");
 
             /// navigate to the repost list
             navigateToRepostListFromQuoteList();
@@ -115,7 +115,7 @@ public class TweetEngagementCrawler extends Crawler {
             // remove the author's handle
             repost_handle_set.remove(target_jsonObject.get("handle").getAsString());
             // announce the result
-            System.out.println(STR."- \{repost_handle_set.size()} reposts crawled");
+            System.out.println("- " + repost_handle_set.size() + " reposts crawled");
 
             /// navigate back to the tweet
             navigateBackToCommentList();
@@ -128,7 +128,7 @@ public class TweetEngagementCrawler extends Crawler {
             // remove the author's handle
             comment_handle_set.remove(target_jsonObject.get("handle").getAsString());
             // announce the result
-            System.out.println(STR."- \{comment_handle_set.size()} comments crawled");
+            System.out.println("- " + comment_handle_set.size() + " comments crawled");
 
             /// Push the data to the json objects
             pushData(quote_handle_set, TweetEngagementType.QUOTE);

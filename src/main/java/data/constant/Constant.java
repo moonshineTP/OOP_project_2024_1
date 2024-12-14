@@ -23,10 +23,10 @@ public class Constant {
       public static final String START_TIMESTAMP = "12:00 AM · Oct 01, 2024";
 
       // Object count limits
-      public static final int KOL_COUNT_LIMIT = 1000;
+      public static final int KOL_COUNT_LIMIT = 200;
       public static final int TWEET_COUNT_LIMIT = 10;
 
-      public static final int MIN_VIEW = 2000;
-      public static final int MIN_LIKE = 40;
-      public static final int MIN_COMMENT = 4;
+      public static final int MIN_VIEW = 2500;
+      public static final int MIN_LIKE = 50;
+      public static final int MIN_COMMENT = 5;
 }

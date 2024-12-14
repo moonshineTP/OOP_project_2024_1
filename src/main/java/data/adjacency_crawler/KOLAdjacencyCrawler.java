@@ -97,7 +97,7 @@ public class KOLAdjacencyCrawler extends Crawler {
                   // write the data
                   CustomJsonWriter.write(user_jsonObject, user_data_file_path);
                   CustomJsonWriter.write(tweet_jsonObject, tweet_data_file_path);
-                  System.out.println(STR."/// Data written, \{kol_count} KOL(s) crawled____ ///\n\n\n");
+                  System.out.println("/// Data written, " + kol_count + " KOL(s) crawled____ ///\n\n\n");
 
                   // check the break limit
                   if (kol_count == Constant.KOL_COUNT_LIMIT) break;

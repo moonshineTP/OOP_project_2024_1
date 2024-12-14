@@ -20,7 +20,6 @@ import java.util.Set;
  * This class is used to crawl the following KOLs of the inspected KOL and add the info to the
  * following_kol_handle_list;
  */
-
 public class KOLFollowingCrawler extends Crawler {
       private static final int SCROLL_LENGTH = 2500;
 
@@ -44,7 +43,7 @@ public class KOLFollowingCrawler extends Crawler {
 
             String handle_name = target_jsonObject.get("handle").getAsString().substring(1);
             wait.until(ExpectedConditions.visibilityOfElementLocated(
-                  By.cssSelector(STR."a[href='/\{handle_name}/following']"))).click();
+                  By.cssSelector("a[href='/" + handle_name + "/following']"))).click();
 
             Sleeper.sleep(Constant.BIG_WAIT_TIME);
       }
@@ -71,7 +70,7 @@ public class KOLFollowingCrawler extends Crawler {
             }
 
             /// Finish
-            System.out.println(STR."\{kol_count} KOL(s) found\n");
+            System.out.println(kol_count + " KOL(s) found\n");
             Sleeper.sleep(Constant.SMALL_WAIT_TIME);
             return true;
       }

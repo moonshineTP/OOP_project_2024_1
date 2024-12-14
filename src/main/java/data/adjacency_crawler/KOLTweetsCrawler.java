@@ -62,7 +62,7 @@ public class KOLTweetsCrawler extends Crawler {
             } else distance_to_top = (long) distance_to_top_object;
 
             // scroll it to place it right under the header
-            js_executor.executeScript(STR."window.scrollBy(0, \{distance_to_top - 53});");
+            js_executor.executeScript("window.scrollBy(0, " + (distance_to_top - 53) + ");");
 
 
             /// ____Main loop____ ///
@@ -93,7 +93,7 @@ public class KOLTweetsCrawler extends Crawler {
                   // check the tweet height
                   int tweet_height = Integer.parseInt(inspected_div.getAttribute("offsetHeight"));
                   if (tweet_height < 90) {
-                        js_executor.executeScript(STR."window.scrollBy(0, \{tweet_height});");
+                        js_executor.executeScript("window.scrollBy(0, " + tweet_height + "});");
                         Sleeper.sleep(Constant.SMALL_WAIT_TIME);
                         continue;
                   }
@@ -102,7 +102,7 @@ public class KOLTweetsCrawler extends Crawler {
                   List<WebElement> tweets = inspected_div.findElements(
                         By.cssSelector("article[data-testid='tweet']"));
                   if (tweets.isEmpty()) {
-                        js_executor.executeScript(STR."window.scrollBy(0, \{tweet_height});");
+                        js_executor.executeScript("window.scrollBy(0, " + tweet_height + ");");
                         Sleeper.sleep(Constant.MEDIUM_WAIT_TIME);
                         continue;
                   }
@@ -125,7 +125,7 @@ public class KOLTweetsCrawler extends Crawler {
                   }
 
                   /// Prepare for the next div
-                  js_executor.executeScript(STR."window.scrollBy(0, \{tweet_height});");
+                  js_executor.executeScript("window.scrollBy(0, " + tweet_height + ");");
                   Sleeper.sleep(Constant.SMALL_WAIT_TIME);
             }
 

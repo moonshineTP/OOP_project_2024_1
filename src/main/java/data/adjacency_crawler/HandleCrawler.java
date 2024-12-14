@@ -56,7 +56,7 @@ class HandleCrawler {
             if (new_size == old_size) return false;
 
             /// Scroll to load the next divs
-            ((JavascriptExecutor) driver).executeScript(STR."window.scrollBy(0, \{SCROLL_LENGTH});");
+            ((JavascriptExecutor) driver).executeScript("window.scrollBy(0, " + SCROLL_LENGTH + ");");
 
             /// Finish
             Sleeper.sleep(Constant.BIG_WAIT_TIME);

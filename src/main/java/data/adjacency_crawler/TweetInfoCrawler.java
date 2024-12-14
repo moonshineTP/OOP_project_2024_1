@@ -66,7 +66,7 @@ public class TweetInfoCrawler extends Crawler {
             String author = author_username_and_handle.substring(author_username_and_handle.indexOf('\n') + 1);
             String user_handle = target_jsonObject.get("handle").getAsString();
             if (!author.equals(user_handle)) {
-                  System.out.println("- Not an original post. Tweet unqualified");
+                  System.out.println("- Not an original post. Tweet unqualified\n");
                   return false;
             }
 
@@ -96,7 +96,7 @@ public class TweetInfoCrawler extends Crawler {
 
             // check the benchmark for view
             if (view_count < Constant.MIN_VIEW) {
-                  System.out.println(STR."- View count less than \{Constant.MIN_VIEW}. Tweet unqualified");
+                  System.out.println("- View count less than " + Constant.MIN_VIEW + ". Tweet unqualified\n");
                   return false;
             }
 
@@ -125,11 +125,11 @@ public class TweetInfoCrawler extends Crawler {
 
             // check the benchmark for like and comment count
             if (like_count < Constant.MIN_LIKE) {
-                  System.out.println(STR."- Like count less than \{Constant.MIN_LIKE}. Tweet unqualified");
+                  System.out.println("- Like count less than "+ Constant.MIN_LIKE + ". Tweet unqualified\n");
                   return false;
             }
             if (comment_count < Constant.MIN_COMMENT) {
-                  System.out.println(STR."- Comment count less than \{Constant.MIN_COMMENT}. Tweet unqualified");
+                  System.out.println("- Comment count less than " + Constant.MIN_COMMENT + ". Tweet unqualified\n");
                   return false;
             }
 

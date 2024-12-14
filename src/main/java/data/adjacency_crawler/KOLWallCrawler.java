@@ -32,7 +32,7 @@ public class KOLWallCrawler extends Crawler {
       /// ____Method____ ///
       @Override
       public void navigate() {
-            System.out.println(STR."/// ____Navigate to \{target_jsonObject.get("handle").getAsString()}____ ///");
+            System.out.println("/// ____Navigate to " + target_jsonObject.get("handle").getAsString() + "____ ///");
 
             String url = target_jsonObject.get("url").getAsString();
             driver.navigate().to(url);
