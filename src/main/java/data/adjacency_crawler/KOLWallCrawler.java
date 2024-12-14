@@ -3,7 +3,7 @@ package data.adjacency_crawler;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
-import data.util.Sleeper;
+import data.Sleeper;
 import org.openqa.selenium.WebDriver;
 
 import data.Crawler;

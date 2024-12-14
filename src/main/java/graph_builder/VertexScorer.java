@@ -3,12 +3,13 @@ package graph_builder;
 import com.google.gson.JsonObject;
 
 public class VertexScorer {
+      private final static float TWEET_PARAM = 10;
       /// Score vertices
       float scoreKOL (JsonObject kol) {
             return kol.get("follower_count").getAsInt();
       }
 
-      float scoreNonKOL (JsonObject non_kol) {
+      float scoreNonKOL () {
             return 300;
       }
 
@@ -20,6 +21,6 @@ public class VertexScorer {
             int bookmarks = tweet.get("bookmark_count").getAsInt();
 
             int engages = likes + comments+ reposts + bookmarks;
-            return 1.0f * views * views / (views - engages);
+            return (float) (1.0f * views * Math.pow(1.0f * views / (views - engages), TWEET_PARAM));
       }
 }

@@ -2,13 +2,15 @@ package graph_builder;
 
 import com.google.gson.*;
 import data.constant.Constant;
-import data.util.CustomJsonReader;
-import data.util.CustomJsonWriter;
+import jsonIO.CustomJsonReader;
+import jsonIO.CustomJsonWriter;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
+/**
+ * This class use the user_data and tweet_data to create a json file describing a graph with
+ * weight for the pagerank algorithm.
+ */
 public class GraphBuilder {
       public JsonObject user_data;
       public JsonObject tweet_data;
@@ -27,8 +29,9 @@ public class GraphBuilder {
       }
 
       public static void main () {
-            String GRAPH_DATA_FILE_PATH = "C:\\Users\\admin\\IdeaProjects\\OOP_project\\untitled\\src\\main\\java\\graph_builder\\Graph_data.json";
-            GraphBuilder graph_builder = new GraphBuilder(GRAPH_DATA_FILE_PATH);
+            String file_path = "C:\\Users\\admin\\IdeaProjects\\OOP_project\\untitled\\src\\main\\java\\graph_builder\\Graph_data.json";
+            GraphBuilder graph_builder = new GraphBuilder(file_path);
+
             graph_builder.initialize();
             graph_builder.set_target();
             graph_builder.build_vertices();
@@ -69,9 +72,9 @@ public class GraphBuilder {
             JsonObject graph = graph_data.getAsJsonObject("graph");
 
             /// Initialize containers
-            HashMap<String, Float> kol_scores = new HashMap<>();
-            HashMap<String, Float> tweet_scores = new HashMap<>();
-            HashMap<String, Float> non_kol_scores = new HashMap<>();
+            Map<String, Float> kol_scores = new HashMap<>();
+            Map<String, Float> tweet_scores = new HashMap<>();
+            Map<String, Float> non_kol_scores = new HashMap<>();
 
             /// Calculating scores
             VertexScorer vertex_scorer = new VertexScorer();
@@ -84,6 +87,15 @@ public class GraphBuilder {
                   kol_scores.put(kol_handle, score);
                   total_kol_score += score;
             }
+
+            List<Map.Entry<String, Float>> kol_score_list = new ArrayList<>(kol_scores.entrySet());
+            kol_score_list.sort(Map.Entry.comparingByValue(Comparator.reverseOrder()));
+            int order = 1;
+            for (Map.Entry<String, Float> entry: kol_score_list) {
+                  System.out.println(order + ". " + entry.getKey() + ": " + entry.getValue());
+                  order++;
+            }
+
             for (String tweet_id: tweet_data.keySet()) {
                   JsonObject tweet = tweet_data.getAsJsonObject(tweet_id);
                   float score = vertex_scorer.scoreTweet(tweet);
@@ -92,8 +104,7 @@ public class GraphBuilder {
                   total_tweet_score += score;
             }
             for (String non_kol_handle: non_kol_data.keySet()) {
-                  JsonObject non_kol = non_kol_data.getAsJsonObject(non_kol_handle);
-                  float score = vertex_scorer.scoreNonKOL(non_kol);
+                  float score = vertex_scorer.scoreNonKOL();
 
                   non_kol_scores.put(non_kol_handle, score);
                   total_non_kol_score += score;
@@ -160,30 +171,20 @@ public class GraphBuilder {
                                     + EdgeScore.KOL.COMMENT.score() * comment_list.size();
 
                   JsonObject edges = new JsonObject();
-                  for (JsonElement handle: following_list) {
-                        edges.addProperty(handle.getAsString(), 1.0f * EdgeScore.KOL.FOLLOW.score() / total_score);
-                  }
-                  for (JsonElement id: tweet_list) {
-                        edges.addProperty(id.getAsString(), 1.0f * EdgeScore.KOL.TWEET.score() / total_score);
-                  }
-                  for (JsonElement id: quote_list) {
-                        edges.addProperty(id.getAsString(), 1.0f * EdgeScore.KOL.QUOTE.score() / total_score);
-                  }
-                  for (JsonElement id: repost_list) {
-                        edges.addProperty(id.getAsString(), 1.0f * EdgeScore.KOL.REPOST.score() / total_score);
-                  }
-                  for (JsonElement id: comment_list) {
-                        edges.addProperty(id.getAsString(), 1.0f * EdgeScore.KOL.COMMENT.score() / total_score);
-                  }
+
+                  addMultipleByIncrement(edges, following_list, 1.0f * EdgeScore.KOL.FOLLOW.score() / total_score);
+                  addMultipleByIncrement(edges, tweet_list, 1.0f * EdgeScore.KOL.TWEET.score() / total_score);
+                  addMultipleByIncrement(edges, quote_list, 1.0f * EdgeScore.KOL.QUOTE.score() / total_score);
+                  addMultipleByIncrement(edges, repost_list, 1.0f * EdgeScore.KOL.REPOST.score() / total_score);
+                  addMultipleByIncrement(edges, comment_list, 1.0f * EdgeScore.KOL.COMMENT.score() / total_score);
 
                   /// Add edge list to the graph
                   JsonObject vertex = graph.getAsJsonObject(kol_handle);
+
                   vertex.add("edges", edges);
 
                   int edge_count = following_list.size() + tweet_list.size() + quote_list.size()
                         + repost_list.size() + comment_list.size();
-                  vertex.addProperty("edge_count", edge_count);
-
                   total_edge += edge_count;
             }
 
@@ -225,8 +226,7 @@ public class GraphBuilder {
                         }
                   }
 
-                  /// Calculate score and add edges
-                  JsonObject vertex = graph.getAsJsonObject(id);
+                  /// Calculate score and make edges
                   JsonObject edges = new JsonObject();
 
                   // add author edge
@@ -235,22 +235,23 @@ public class GraphBuilder {
 
                   // add commenter edge
                   int total_score = kol_commenter_list.size() + non_kol_commenter_list.size();
-                  for (String handle : kol_commenter_list) {
-                        edges.addProperty(handle, EdgeScore.TweetRatio.COMMENT.ratio()
-                              * EdgeScore.Comment.KOL.score()/ total_score);
-                  }
-                  for (String handle : non_kol_commenter_list) {
-                        edges.addProperty(handle, EdgeScore.TweetRatio.COMMENT.ratio()
-                              * EdgeScore.Comment.NON_KOL.score()/ total_score);
-                  }
 
-                  /// Add edge list and edge count to the graph
+                  float kol_score = EdgeScore.TweetRatio.COMMENT.ratio()
+                                          * EdgeScore.Comment.KOL.score()
+                                                / total_score;
+                  addMultipleByIncrement(edges, kol_commenter_list, kol_score);
+
+                  float non_kol_score = EdgeScore.TweetRatio.COMMENT.ratio()
+                                          * EdgeScore.Comment.NON_KOL.score()
+                                                / total_score;
+                  addMultipleByIncrement(edges, non_kol_commenter_list, non_kol_score);
+
+                  /// Add edge list and edge count to the vertex
+                  JsonObject vertex = graph.getAsJsonObject(id);
+
                   vertex.add("edges", edges);
 
                   int edge_count = 1 + kol_commenter_list.size() + non_kol_commenter_list.size();
-                  vertex.addProperty("edge_count", edge_count);
-
-
                   total_edge += edge_count;
             }
 
@@ -277,29 +278,24 @@ public class GraphBuilder {
                   JsonArray repost_list = non_kol.getAsJsonArray("repost_tweet_id_list");
                   JsonArray comment_list = non_kol.getAsJsonArray("comment_tweet_id_list");
 
+
                   /// Calculate score and add edges
                   int total_score = EdgeScore.Non_KOL.QUOTE.score() * quote_list.size()
                                     + EdgeScore.Non_KOL.REPOST.score() * repost_list.size()
                                     + EdgeScore.Non_KOL.COMMENT.score() * comment_list.size();
 
                   JsonObject edges = new JsonObject();
-                  for (JsonElement id: quote_list) {
-                        edges.addProperty(id.getAsString(), 1.0f * EdgeScore.Non_KOL.QUOTE.score() / total_score);
-                  }
-                  for (JsonElement id: repost_list) {
-                        edges.addProperty(id.getAsString(), 1.0f * EdgeScore.Non_KOL.REPOST.score() / total_score);
-                  }
-                  for (JsonElement id: comment_list) {
-                        edges.addProperty(id.getAsString(), 1.0f * EdgeScore.Non_KOL.COMMENT.score() / total_score);
-                  }
+
+                  addMultipleByIncrement(edges, quote_list, 1.0f * EdgeScore.Non_KOL.QUOTE.score() / total_score);
+                  addMultipleByIncrement(edges, repost_list, 1.0f * EdgeScore.Non_KOL.REPOST.score() / total_score);
+                  addMultipleByIncrement(edges, comment_list, 1.0f * EdgeScore.Non_KOL.COMMENT.score() / total_score);
+
 
                   /// Add edge list to the graph
                   JsonObject vertex = graph.getAsJsonObject(non_kol_handle);
                   vertex.add("edges", edges);
 
                   int edge_count = quote_list.size() + repost_list.size() + comment_list.size();
-                  vertex.addProperty("edge_count", edge_count);
-
                   total_edge += edge_count;
             }
 
@@ -307,5 +303,25 @@ public class GraphBuilder {
 
             /// Write the graph
             CustomJsonWriter.write(graph_data, file_path);
+      }
+
+      private void addByIncrement (JsonObject json_object, String key, float val) {
+            if (json_object.has(key)) {
+                  float prev = json_object.get(key).getAsFloat();
+                  json_object.addProperty(key, prev + val);
+            }
+            else json_object.addProperty(key, val);
+      }
+
+      private void addMultipleByIncrement (JsonObject json_obj, JsonArray json_arr, float score) {
+            for (JsonElement el: json_arr) {
+                  addByIncrement(json_obj, el.getAsString(), score);
+            }
+      }
+
+      private void addMultipleByIncrement (JsonObject json_obj, List<String> arr, float score) {
+            for (String str: arr) {
+                  addByIncrement(json_obj, str, score);
+            }
       }
 }

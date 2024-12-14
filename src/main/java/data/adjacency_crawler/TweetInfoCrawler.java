@@ -11,9 +11,9 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import data.Crawler;
 import data.constant.Constant;
-import data.util.ConvertToMinutesSinceStart;
-import data.util.ConvertTwitterCount;
-import data.util.Sleeper;
+import data.converter.ConvertToMinutesSinceStart;
+import data.converter.ConvertTwitterCount;
+import data.Sleeper;
 import graph_element.Tweet;
 
 import java.time.Duration;
@@ -31,12 +31,6 @@ import java.util.List;
  */
 
 public class TweetInfoCrawler extends Crawler {
-      /// Constant
-      private static final int MIN_VIEW = 2000;
-      private static final int MIN_LIKE = 40;
-      private static final int MIN_COMMENT = 4;
-
-
       /// ____Field____ ///
       JsonObject tweet_data_jsonObject;
       WebDriverWait wait;
@@ -76,14 +70,16 @@ public class TweetInfoCrawler extends Crawler {
                   return false;
             }
 
-            System.out.println("- Tweet qualified");
+            // Check if the id existed
+            String url = driver.getCurrentUrl();      // get the tweet's url
+            String id = url.substring(url.indexOf("/status/") + 8);    // extract the id
+            if (target_jsonObject.has(id)) {
+                  System.out.println("- Tweet already existed in the data");
+            }
 
 
             /// ____Tweet qualified____ ///
-            // find the tweet's url and id
-            String url = driver.getCurrentUrl();      // get the tweet's url
-            String id = url.substring(url.indexOf("/status/") + 8);    // extract the id
-
+            System.out.println("- Tweet qualified");
             // initialize tweet and set its identifying info
             Tweet tweet;
             tweet = new Tweet(id);
@@ -99,8 +95,8 @@ public class TweetInfoCrawler extends Crawler {
             int view_count = ConvertTwitterCount.convert(view_count_string);
 
             // check the benchmark for view
-            if (view_count < MIN_VIEW) {
-                  System.out.println(STR."- View count less than \{MIN_VIEW}. Tweet unqualified");
+            if (view_count < Constant.MIN_VIEW) {
+                  System.out.println(STR."- View count less than \{Constant.MIN_VIEW}. Tweet unqualified");
                   return false;
             }
 
@@ -128,12 +124,12 @@ public class TweetInfoCrawler extends Crawler {
             int bookmark_count = statistic_count.get(3);
 
             // check the benchmark for like and comment count
-            if (like_count < MIN_LIKE) {
-                  System.out.println(STR."- Like count less than \{MIN_LIKE}. Tweet unqualified");
+            if (like_count < Constant.MIN_LIKE) {
+                  System.out.println(STR."- Like count less than \{Constant.MIN_LIKE}. Tweet unqualified");
                   return false;
             }
-            if (comment_count < MIN_COMMENT) {
-                  System.out.println(STR."- Comment count less than \{MIN_COMMENT}. Tweet unqualified");
+            if (comment_count < Constant.MIN_COMMENT) {
+                  System.out.println(STR."- Comment count less than \{Constant.MIN_COMMENT}. Tweet unqualified");
                   return false;
             }
 

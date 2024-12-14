@@ -3,7 +3,6 @@ package data;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import data.constant.Constant;
-import data.util.Sleeper;
 import org.openqa.selenium.WebDriver;
 
 /**

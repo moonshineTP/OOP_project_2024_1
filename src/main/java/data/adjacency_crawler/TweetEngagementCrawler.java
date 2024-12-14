@@ -9,7 +9,7 @@ import org.openqa.selenium.WebDriver;
 
 import data.Crawler;
 import data.constant.Constant;
-import data.util.Sleeper;
+import data.Sleeper;
 import graph_element.User;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -58,10 +58,11 @@ public class TweetEngagementCrawler extends Crawler {
 
             // scroll exactly to the board
             js_executor.executeScript(STR."window.scrollBy(0, \{distance_to_top - 46});");
+            Sleeper.sleep(Constant.MEDIUM_WAIT_TIME);
 
             // click the quote button
             js_executor.executeScript("document.elementFromPoint"
-                  + "(arguments[0], arguments[1]).click();", 540, 90);
+                  + "(arguments[0], arguments[1]).click();", 520, 90);
             Sleeper.sleep(Constant.MEDIUM_WAIT_TIME);
 
             // click the view quote
@@ -76,13 +77,13 @@ public class TweetEngagementCrawler extends Crawler {
                   + "(arguments[0], arguments[1]).click();", 800, 100);
             Sleeper.sleep(Constant.MEDIUM_WAIT_TIME);
             ((JavascriptExecutor) driver).executeScript("window.scrollBy(0, -2000);");
-            Sleeper.sleep(Constant.MEDIUM_WAIT_TIME);
+            Sleeper.sleep(Constant.BIG_WAIT_TIME);
       }
 
       public void navigateBackToCommentList() {
             navigateBack();
             navigateBack();
-            Sleeper.sleep(Constant.MEDIUM_WAIT_TIME);
+            Sleeper.sleep(Constant.BIG_WAIT_TIME);
       }
 
       @Override
@@ -90,13 +91,13 @@ public class TweetEngagementCrawler extends Crawler {
             /// Initialize crawler
             HandleCrawler handle_crawler = new HandleCrawler(driver);
 
-            /// Crawl
+            /// Initialize handle containers
             Set<String> quote_handle_set = new HashSet<>();
             Set<String> repost_handle_set = new HashSet<>();
             Set<String> comment_handle_set = new HashSet<>();
             boolean crawl_state;
 
-            // navigate to the quote list
+            /// navigate to the quote list
             navigateToQuoteList();
             do { // crawl
                   crawl_state = handle_crawler.crawl(quote_handle_set);
@@ -106,7 +107,7 @@ public class TweetEngagementCrawler extends Crawler {
             // announce the result
             System.out.println(STR."- \{quote_handle_set.size()} quotes crawled");
 
-            // navigate to the repost list
+            /// navigate to the repost list
             navigateToRepostListFromQuoteList();
             do { // crawl
                   crawl_state = handle_crawler.crawl(repost_handle_set);
@@ -116,11 +117,14 @@ public class TweetEngagementCrawler extends Crawler {
             // announce the result
             System.out.println(STR."- \{repost_handle_set.size()} reposts crawled");
 
-            // navigate back to the tweet
+            /// navigate back to the tweet
             navigateBackToCommentList();
+            int fail_count = 0, max_fail = 3;
             do { // crawl
                   crawl_state = handle_crawler.crawl(comment_handle_set);
-            } while (crawl_state);
+                  if (!crawl_state) fail_count++;
+                  else fail_count = 0;
+            } while (fail_count < max_fail);
             // remove the author's handle
             comment_handle_set.remove(target_jsonObject.get("handle").getAsString());
             // announce the result
@@ -131,7 +135,7 @@ public class TweetEngagementCrawler extends Crawler {
             pushData(repost_handle_set, TweetEngagementType.REPOST);
             pushData(comment_handle_set, TweetEngagementType.COMMENT);
 
-            /// Return
+            /// Finish
             return true;
       }
 

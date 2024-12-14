@@ -3,7 +3,11 @@ package data.kol_info_crawler;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
-import data.util.*;
+import data.ChromeSetup;
+import data.Registrar;
+import data.Sleeper;
+import jsonIO.CustomJsonReader;
+import jsonIO.CustomJsonWriter;
 import org.openqa.selenium.*;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.interactions.Actions;
@@ -15,7 +19,7 @@ import java.util.List;
 
 import data.Crawler;
 import data.constant.Constant;
-import data.util.ConvertTwitterCount;
+import data.converter.ConvertTwitterCount;
 import graph_element.KOL;
 
 
@@ -45,13 +49,15 @@ public class KOLInfoCrawler extends Crawler {
       WebDriverWait wait;
       Actions mouse;
 
+      JsonObject user_data;
 
       /// ____Constructor____ ///
-      public KOLInfoCrawler(WebDriver driver, Gson gson, JsonObject target_jsonObject) {
+      public KOLInfoCrawler(WebDriver driver, Gson gson, JsonObject target_jsonObject, JsonObject user_data) {
             super(driver, gson, target_jsonObject);
             js_executor = (JavascriptExecutor) driver;
             wait = new WebDriverWait(driver, Duration.ofMillis(Constant.HUGE_WAIT_TIME));
             mouse = new Actions(driver);
+            this.user_data = user_data;
       }
 
 
@@ -62,19 +68,16 @@ public class KOLInfoCrawler extends Crawler {
        */
       public static void main(String[] args) {
             /// Read the file
-            JsonObject root_jsonObject = CustomJsonReader.read(Constant.USER_DATA_FILE_PATH);
-            JsonObject kol_map_jsonObject = root_jsonObject.getAsJsonObject("KOL");
+            JsonObject user_data = CustomJsonReader.read(Constant.USER_DATA_FILE_PATH);
+            JsonObject kol_data = user_data.getAsJsonObject("KOL");
 
             /// Crawl data
             WebDriver driver = ChromeSetup.set();
             Gson gson = new Gson();
-            Crawler crawler = new KOLInfoCrawler(driver, gson, kol_map_jsonObject);
+            Crawler crawler = new KOLInfoCrawler(driver, gson, kol_data, user_data);
 
             crawler.navigate();
             crawler.crawl();
-
-            /// Write the file
-            CustomJsonWriter.write(root_jsonObject, Constant.USER_DATA_FILE_PATH);
       }
 
 
@@ -124,7 +127,10 @@ public class KOLInfoCrawler extends Crawler {
                   );
 
                   // get profiles data
-                  int success_count = getProfilesData(profiles);
+                  int success_count = crawlProfilesData(profiles);
+
+                  // Write the file
+                  CustomJsonWriter.write(user_data, Constant.USER_DATA_FILE_PATH);
 
                   // update KOL_count
                   KOL_count = target_jsonObject.size();
@@ -169,22 +175,28 @@ public class KOLInfoCrawler extends Crawler {
             Method to iterate each profile and crawl data from the profile list.
             Moreover, it returns the number of KOLs extracted successfully
        */
-      private int getProfilesData(List<WebElement> profiles) {
+      private int crawlProfilesData(List<WebElement> profiles) {
             int success_count = 0, total_count = 0;
 
             for (WebElement profile: profiles) {
                   /// Adjust the first profile div
                   if (total_count == 0) {
                         // get the distance from the top of the viewpoint
-                        Long distance_to_top =
-                              (Long) js_executor.executeScript("return " +
+                        long distance_to_top =
+                              (long) js_executor.executeScript("return " +
                                     "arguments[0].getBoundingClientRect().top;", profile);
                         // scroll it to place it right under the header
                         js_executor.executeScript(STR."window.scrollBy(0, \{distance_to_top - HEADER_HEIGHT});");
                   }
 
                   /// Crawl and push the data of the current profile
-                  boolean isSuccessful = getOneProfileData(profile);
+                  boolean is_successful;
+                  try{
+                        is_successful = crawlOneProfileData(profile);
+                  } catch (StaleElementReferenceException e) {
+                        is_successful = false;
+                  }
+
 
                   /// Scroll down to render the next profile div list
                   int profile_height = Integer.parseInt(profile.getAttribute("clientHeight"));
@@ -192,7 +204,7 @@ public class KOLInfoCrawler extends Crawler {
 
                   /// Update the counter
                   total_count++;
-                  if (isSuccessful) success_count++;
+                  if (is_successful) success_count++;
 
                   /// Check total count to break
                   if(total_count == MAX_PROFILE_PER_SESSION) break; // check the session limit
@@ -211,7 +223,7 @@ public class KOLInfoCrawler extends Crawler {
             If satisfied, it adds the handle - KOL pair to the current data batch.
             Return true if the profile is a KOL and inserted successfully, else return false.  */
 
-      private boolean getOneProfileData (WebElement profile) {
+      private boolean crawlOneProfileData(WebElement profile) throws StaleElementReferenceException {
             // find usernameElement
             Sleeper.sleep(Constant.MEDIUM_WAIT_TIME);
             WebElement usernameElement = profile.findElement(
@@ -287,7 +299,8 @@ public class KOLInfoCrawler extends Crawler {
                   return false;
             }
 
-            /// Check KOL criteria
+            /// Check
+            if (target_jsonObject.has(handle)) return false;
             if (follower_count < MIN_KOL_FOLLOWER) return false;
 
             /// Add data

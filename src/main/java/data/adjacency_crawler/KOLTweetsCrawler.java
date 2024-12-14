@@ -12,7 +12,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import data.Crawler;
-import data.util.Sleeper;
+import data.Sleeper;
 
 import java.time.Duration;
 import java.util.List;

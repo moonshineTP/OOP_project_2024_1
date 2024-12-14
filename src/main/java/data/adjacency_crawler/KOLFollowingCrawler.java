@@ -4,19 +4,16 @@ import com.google.gson.Gson;
 
 import com.google.gson.JsonObject;
 import data.constant.Constant;
-import data.util.Sleeper;
+import data.Sleeper;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 
 import data.Crawler;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**

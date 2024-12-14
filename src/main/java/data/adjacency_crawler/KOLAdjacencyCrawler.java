@@ -3,10 +3,13 @@ package data.adjacency_crawler;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import data.ChromeSetup;
+import data.Registrar;
 import data.constant.Constant;
+import jsonIO.CustomJsonReader;
+import jsonIO.CustomJsonWriter;
 import org.openqa.selenium.WebDriver;
 
-import data.util.*;
 import data.Crawler;
 
 import java.io.IOException;

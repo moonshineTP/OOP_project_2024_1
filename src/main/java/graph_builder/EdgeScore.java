@@ -3,8 +3,8 @@ package graph_builder;
 public class EdgeScore {
       public enum KOL {
             FOLLOW(1),
-            TWEET(4),
-            QUOTE(4),
+            TWEET(5),
+            QUOTE(5),
             REPOST(2),
             COMMENT(1);
 
@@ -50,7 +50,7 @@ public class EdgeScore {
       }
 
       public enum Non_KOL {
-            QUOTE(4),
+            QUOTE(5),
             REPOST(2),
             COMMENT(1);
 

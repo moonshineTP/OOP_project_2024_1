@@ -8,7 +8,7 @@ import org.openqa.selenium.WebDriver;
 
 import data.constant.Constant;
 import data.Crawler;
-import data.util.Sleeper;
+import data.Sleeper;
 
 
 /**
