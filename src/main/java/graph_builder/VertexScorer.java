@@ -18,9 +18,8 @@ public class VertexScorer {
             int likes = tweet.get("like_count").getAsInt();
             int comments = tweet.get("comment_count").getAsInt();
             int reposts = tweet.get("repost_count").getAsInt();
-            int bookmarks = tweet.get("bookmark_count").getAsInt();
 
-            int engages = likes + comments+ reposts + bookmarks;
+            int engages = likes + comments+ reposts;
             return (float) (1.0f * views * Math.pow(1.0f * views / (views - engages), TWEET_PARAM));
       }
 }

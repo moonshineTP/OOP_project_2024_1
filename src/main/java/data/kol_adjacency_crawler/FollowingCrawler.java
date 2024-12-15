@@ -1,4 +1,4 @@
-package data.adjacency_crawler;
+package data.kol_adjacency_crawler;
 
 import com.google.gson.Gson;
 
@@ -20,15 +20,15 @@ import java.util.Set;
  * This class is used to crawl the following KOLs of the inspected KOL and add the info to the
  * following_kol_handle_list;
  */
-public class KOLFollowingCrawler extends Crawler {
+public class FollowingCrawler extends Crawler {
       private static final int SCROLL_LENGTH = 2500;
 
       private JsonObject kol_map_jsonObject;
 
 
       /// ____Constructor____ ///
-      public KOLFollowingCrawler(WebDriver driver, Gson gson,
-                                 JsonObject target_jsonObject, JsonObject kol_map_jsonObject) {
+      public FollowingCrawler(WebDriver driver, Gson gson,
+                              JsonObject target_jsonObject, JsonObject kol_map_jsonObject) {
             super(driver, gson, target_jsonObject);
             this.kol_map_jsonObject = kol_map_jsonObject;
       }

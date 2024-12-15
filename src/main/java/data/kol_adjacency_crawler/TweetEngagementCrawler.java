@@ -1,4 +1,4 @@
-package data.adjacency_crawler;
+package data.kol_adjacency_crawler;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;

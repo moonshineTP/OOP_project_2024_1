@@ -8,7 +8,6 @@ import jsonIO.CustomJsonWriter;
 public class ClearData {
       public static void main () {
             ClearData clearData = new ClearData();
-            clearData.clearKOLData();
             clearData.clearNonKOLData();
             clearData.clearTweetData();
             System.out.println("Data cleared!");

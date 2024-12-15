@@ -1,4 +1,4 @@
-package data.adjacency_crawler;
+package data.kol_adjacency_crawler;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;

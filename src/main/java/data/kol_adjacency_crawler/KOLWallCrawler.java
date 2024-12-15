@@ -1,4 +1,4 @@
-package data.adjacency_crawler;
+package data.kol_adjacency_crawler;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -48,15 +48,15 @@ public class KOLWallCrawler extends Crawler {
 
             /// Set up crawlers
             JsonObject kol_map_jsonObject = user_data_jsonObject.getAsJsonObject("KOL");
-            KOLFollowingCrawler follow_crawler = new KOLFollowingCrawler
+            FollowingCrawler follow_crawler = new FollowingCrawler
                   (driver, gson, target_jsonObject, kol_map_jsonObject);
-            KOLTweetsCrawler tweets_crawler = new KOLTweetsCrawler
+            TweetsCrawler tweets_crawler = new TweetsCrawler
                   (driver, gson, target_jsonObject, user_data_jsonObject, tweet_data_jsonObject);
 
             /// Crawl following KOL
-            follow_crawler.navigate();
-            follow_crawler.crawl();
-            follow_crawler.navigateBack();
+//            follow_crawler.navigate();
+//            follow_crawler.crawl();
+//            follow_crawler.navigateBack();
 
             /// Crawl tweets
             tweets_crawler.crawl();
