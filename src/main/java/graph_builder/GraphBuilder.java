@@ -29,7 +29,7 @@ public class GraphBuilder {
       }
 
       public static void main () {
-            String file_path = "C:\\Users\\admin\\IdeaProjects\\OOP_project\\untitled\\src\\main\\java\\graph_builder\\Graph_data.json";
+            String file_path = "C:\\Users\\admin\\IdeaProjects\\OOP_project\\untitled\\data\\Graph_data.json";
             GraphBuilder graph_builder = new GraphBuilder(file_path);
 
             graph_builder.initialize();
