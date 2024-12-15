@@ -14,10 +14,10 @@ public class Constant {
             = "C:\\Users\\admin\\IdeaProjects\\OOP_project\\untitled\\data\\Tweet_data.json";
 
       // time constants, all in milliseconds
-      public static final int HUGE_WAIT_TIME = 9000;
-      public static final int BIG_WAIT_TIME = 3000;
-      public static final int MEDIUM_WAIT_TIME = 900;
-      public static final int SMALL_WAIT_TIME = 300;
+      public static final int HUGE_WAIT_TIME = 6000;
+      public static final int BIG_WAIT_TIME = 2000;
+      public static final int MEDIUM_WAIT_TIME = 600;
+      public static final int SMALL_WAIT_TIME = 200;
 
       // Epoch timestamp
       public static final String START_TIMESTAMP = "12:00 AM · Oct 01, 2024";

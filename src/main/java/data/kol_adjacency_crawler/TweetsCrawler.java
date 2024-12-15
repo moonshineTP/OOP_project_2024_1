@@ -68,17 +68,25 @@ public class TweetsCrawler extends Crawler {
                   /// Loop for cell div
                   for (WebElement inspected_div: cell_divs) {
                         String url;
+                        String author;
 
                         // check if the div is a tweet
                         try {
                               url = inspected_div.findElement(By.xpath
                                     (".//a[contains(@href, '/status/')]"
                               )).getAttribute("href");
+                              author = inspected_div.findElement(By.cssSelector(
+                                    ".css-175oi2r.r-18u37iz.r-1wbh5a2.r-1ez5h0i"
+                              )).getAttribute("innerText");
+                              author = author.substring(0, author.indexOf('\n'));
                         } catch (Exception e) {
                               continue;
                         }
 
+                        // check if the tweet is spotted before
                         if (tweet_url_set.contains(url)) continue;
+                        // check if it is a repost
+                        if (!author.equals(target_jsonObject.get("handle").getAsString())) continue;
 
                         System.out.println("/// A new tweet is spotted");
 
@@ -89,6 +97,7 @@ public class TweetsCrawler extends Crawler {
                         if (comment_count < Constant.MIN_COMMENT) {
                               System.out.println("- Tweet reply less than " + Constant.MIN_COMMENT +
                                     ". Omit tweet\n");
+                              continue;
                         }
 
                         // check repost count
@@ -103,6 +112,7 @@ public class TweetsCrawler extends Crawler {
                         if (like_count < Constant.MIN_LIKE) {
                               System.out.println("- Tweet like less than " + Constant.MIN_LIKE +
                                     ". Omit tweet\n");
+                              continue;
                         }
 
                         // check like count
@@ -113,6 +123,7 @@ public class TweetsCrawler extends Crawler {
                         if (view_count < Constant.MIN_VIEW) {
                               System.out.println("- Tweet like less than " + Constant.MIN_LIKE +
                                     ". Omit tweet\n");
+                              continue;
                         }
 
                         /// Tweet is qualified
@@ -121,15 +132,10 @@ public class TweetsCrawler extends Crawler {
 
                         // create a new tweet instance
                         Tweet tweet;
-                        System.out.println(url);
                         String id = url.substring(url.indexOf("/status/") + 8);    // extract the id
                         tweet = new Tweet(id);
 
                         // add tweet info
-                        String author = inspected_div.findElement(By.cssSelector(
-                              ".css-175oi2r.r-18u37iz.r-1wbh5a2.r-1ez5h0i"
-                        )).getAttribute("innerText");
-
                         tweet.setInfo(url, author);
 
                         // add tweet statistic
@@ -161,7 +167,6 @@ public class TweetsCrawler extends Crawler {
                   The second loop navigate to each tweet and crawl the tweet engagement
              */
             for (String url: tweet_url_set) {
-                  System.out.println(url);
                   driver.navigate().to(url);
                   Sleeper.sleep(Constant.BIG_WAIT_TIME);
                   tweet_engagement_crawler.crawl();

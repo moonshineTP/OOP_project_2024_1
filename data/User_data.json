@@ -6,10 +6,7 @@
                   "is_verified": true,
                   "following_count": 167,
                   "follower_count": 421700,
-                  "following_kol_handle_list": [
-                        "@ParisBlockWeek",
-                        "@ethereum"
-                  ],
+                  "following_kol_handle_list": [],
                   "crawl_state": false,
                   "handle": "@Neo_Blockchain",
                   "quote_tweet_id_list": [],
@@ -22,11 +19,7 @@
                   "is_verified": true,
                   "following_count": 46,
                   "follower_count": 1300000,
-                  "following_kol_handle_list": [
-                        "@AskBlockchain",
-                        "@solana",
-                        "@ParisBlockWeek"
-                  ],
+                  "following_kol_handle_list": [],
                   "crawl_state": false,
                   "handle": "@blockchain",
                   "quote_tweet_id_list": [],
