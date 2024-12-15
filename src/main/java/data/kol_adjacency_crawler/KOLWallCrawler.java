@@ -54,9 +54,9 @@ public class KOLWallCrawler extends Crawler {
                   (driver, gson, target_jsonObject, user_data_jsonObject, tweet_data_jsonObject);
 
             /// Crawl following KOL
-//            follow_crawler.navigate();
-//            follow_crawler.crawl();
-//            follow_crawler.navigateBack();
+            follow_crawler.navigate();
+            follow_crawler.crawl();
+            follow_crawler.navigateBack();
 
             /// Crawl tweets
             tweets_crawler.crawl();
