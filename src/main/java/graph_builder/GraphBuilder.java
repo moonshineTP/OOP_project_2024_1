@@ -2,8 +2,8 @@ package graph_builder;
 
 import com.google.gson.*;
 import data.constant.Constant;
-import jsonIO.CustomJsonReader;
-import jsonIO.CustomJsonWriter;
+import json.CustomJsonReader;
+import json.CustomJsonWriter;
 
 import java.util.*;
 
@@ -16,6 +16,8 @@ public class GraphBuilder {
       public JsonObject tweet_data;
       JsonObject kol_data;
       JsonObject non_kol_data;
+      VertexScorer vertex_scorer;
+      EdgeScorer edge_scorer;
 
       String file_path;
 
@@ -26,6 +28,8 @@ public class GraphBuilder {
             tweet_data = CustomJsonReader.read(Constant.TWEET_DATA_FILE_PATH);
             kol_data = user_data.getAsJsonObject("KOL");
             non_kol_data = user_data.getAsJsonObject("Non-KOL");
+            vertex_scorer = new VertexScorer();
+            edge_scorer = new EdgeScorer();
       }
 
       public static void main () {
@@ -67,18 +71,19 @@ public class GraphBuilder {
       public void build_vertices() {
             System.out.println("/// Building vertices");
 
+
             /// Get graph from file path
             JsonObject graph_data = CustomJsonReader.read(file_path);
             JsonObject graph = graph_data.getAsJsonObject("graph");
 
+
             /// Initialize containers
-            Map<String, Float> kol_scores = new HashMap<>();
-            Map<String, Float> tweet_scores = new HashMap<>();
-            Map<String, Float> non_kol_scores = new HashMap<>();
+            Map<String, Float> kol_scores = new LinkedHashMap<>();
+            Map<String, Float> tweet_scores = new LinkedHashMap<>();
+            Map<String, Float> non_kol_scores = new LinkedHashMap<>();
+
 
             /// Calculating scores
-            VertexScorer vertex_scorer = new VertexScorer();
-
             float total_kol_score = 0, total_non_kol_score = 0, total_tweet_score = 0;
             for (String kol_handle: kol_data.keySet()) {
                   JsonObject kol = kol_data.getAsJsonObject(kol_handle);
@@ -86,14 +91,6 @@ public class GraphBuilder {
 
                   kol_scores.put(kol_handle, score);
                   total_kol_score += score;
-            }
-
-            List<Map.Entry<String, Float>> kol_score_list = new ArrayList<>(kol_scores.entrySet());
-            kol_score_list.sort(Map.Entry.comparingByValue(Comparator.reverseOrder()));
-            int order = 1;
-            for (Map.Entry<String, Float> entry: kol_score_list) {
-                  System.out.println(order + ". " + entry.getKey() + ": " + entry.getValue());
-                  order++;
             }
 
             for (String tweet_id: tweet_data.keySet()) {
@@ -109,10 +106,13 @@ public class GraphBuilder {
                   non_kol_scores.put(non_kol_handle, score);
                   total_non_kol_score += score;
             }
+
             // print result
+            System.out.println("Total vertices: " + (kol_scores.size() + tweet_scores.size() + non_kol_scores.size()));
             System.out.println("Total kol score: " + total_kol_score);
             System.out.println("Total tweet score: " + total_tweet_score);
             System.out.println("Total non-KOL score: " + total_non_kol_score);
+
 
             /// Calculate total score for normalization
             float total_score = total_kol_score + total_tweet_score + total_non_kol_score;
@@ -133,6 +133,7 @@ public class GraphBuilder {
                   vertex.addProperty("score", non_kol_scores.get(non_kol) / total_score);
                   graph.add(non_kol, vertex);
             }
+
 
             /// Write the graph
             CustomJsonWriter.write(graph_data, file_path);
@@ -164,19 +165,19 @@ public class GraphBuilder {
 
 
                   /// Calculate score and add edges
-                  int total_score = EdgeScore.KOL.FOLLOW.score() * following_list.size()
-                                    + EdgeScore.KOL.TWEET.score() * tweet_list.size()
-                                    + EdgeScore.KOL.QUOTE.score() * quote_list.size()
-                                    + EdgeScore.KOL.REPOST.score() * repost_list.size()
-                                    + EdgeScore.KOL.COMMENT.score() * comment_list.size();
+                  int total_score = EdgeScorer.KOLActivityType.FOLLOW.score() * following_list.size()
+                                    + EdgeScorer.KOLActivityType.TWEET.score() * tweet_list.size()
+                                    + EdgeScorer.KOLActivityType.QUOTE.score() * quote_list.size()
+                                    + EdgeScorer.KOLActivityType.REPOST.score() * repost_list.size()
+                                    + EdgeScorer.KOLActivityType.COMMENT.score() * comment_list.size();
 
                   JsonObject edges = new JsonObject();
+                  addMultipleByIncrement(edges, following_list, 1.0f * EdgeScorer.KOLActivityType.FOLLOW.score() / total_score);
+                  addMultipleByIncrement(edges, tweet_list, 1.0f * EdgeScorer.KOLActivityType.TWEET.score() / total_score);
+                  addMultipleByIncrement(edges, quote_list, 1.0f * EdgeScorer.KOLActivityType.QUOTE.score() / total_score);
+                  addMultipleByIncrement(edges, repost_list, 1.0f * EdgeScorer.KOLActivityType.REPOST.score() / total_score);
+                  addMultipleByIncrement(edges, comment_list, 1.0f * EdgeScorer.KOLActivityType.COMMENT.score() / total_score);
 
-                  addMultipleByIncrement(edges, following_list, 1.0f * EdgeScore.KOL.FOLLOW.score() / total_score);
-                  addMultipleByIncrement(edges, tweet_list, 1.0f * EdgeScore.KOL.TWEET.score() / total_score);
-                  addMultipleByIncrement(edges, quote_list, 1.0f * EdgeScore.KOL.QUOTE.score() / total_score);
-                  addMultipleByIncrement(edges, repost_list, 1.0f * EdgeScore.KOL.REPOST.score() / total_score);
-                  addMultipleByIncrement(edges, comment_list, 1.0f * EdgeScore.KOL.COMMENT.score() / total_score);
 
                   /// Add edge list to the graph
                   JsonObject vertex = graph.getAsJsonObject(kol_handle);
@@ -190,6 +191,7 @@ public class GraphBuilder {
 
             System.out.println("Total edges created: " + total_edge);
 
+
             /// Write the graph
             CustomJsonWriter.write(graph_data, file_path);
       }
@@ -197,9 +199,11 @@ public class GraphBuilder {
       public void build_Tweet_edges () {
             System.out.println("/// Building tweet edges");
 
+
             /// Get graph from file path
             JsonObject graph_data = CustomJsonReader.read(file_path);
             JsonObject graph = graph_data.getAsJsonObject("graph");
+
 
             /// Loop
             int total_edge = 0;
@@ -226,29 +230,30 @@ public class GraphBuilder {
                         }
                   }
 
+
                   /// Calculate score and make edges
                   JsonObject edges = new JsonObject();
 
                   // add author edge
                   String author = tweet_data.getAsJsonObject(id).get("author").getAsString();
-                  edges.addProperty(author, EdgeScore.TweetRatio.AUTHOR.ratio());
+                  edges.addProperty(author, EdgeScorer.TweetRatio.AUTHOR.ratio());
 
                   // add commenter edge
                   int total_score = kol_commenter_list.size() + non_kol_commenter_list.size();
 
-                  float kol_score = EdgeScore.TweetRatio.COMMENT.ratio()
-                                          * EdgeScore.Comment.KOL.score()
-                                                / total_score;
+
+                  float kol_score
+                        = EdgeScorer.TweetRatio.COMMENT.ratio() * EdgeScorer.Comment.KOL.score() / total_score;
                   addMultipleByIncrement(edges, kol_commenter_list, kol_score);
 
-                  float non_kol_score = EdgeScore.TweetRatio.COMMENT.ratio()
-                                          * EdgeScore.Comment.NON_KOL.score()
-                                                / total_score;
+
+                  float non_kol_score
+                        = EdgeScorer.TweetRatio.COMMENT.ratio() * EdgeScorer.Comment.NON_KOL.score() / total_score;
                   addMultipleByIncrement(edges, non_kol_commenter_list, non_kol_score);
+
 
                   /// Add edge list and edge count to the vertex
                   JsonObject vertex = graph.getAsJsonObject(id);
-
                   vertex.add("edges", edges);
 
                   int edge_count = 1 + kol_commenter_list.size() + non_kol_commenter_list.size();
@@ -264,9 +269,11 @@ public class GraphBuilder {
       public void build_non_KOL_edges () {
             System.out.println("/// Building non-KOL edges");
 
+
             /// Get graph from file path
             JsonObject graph_data = CustomJsonReader.read(file_path);
             JsonObject graph = graph_data.getAsJsonObject("graph");
+
 
             /// Loop
             int total_edge = 0;
@@ -280,15 +287,15 @@ public class GraphBuilder {
 
 
                   /// Calculate score and add edges
-                  int total_score = EdgeScore.Non_KOL.QUOTE.score() * quote_list.size()
-                                    + EdgeScore.Non_KOL.REPOST.score() * repost_list.size()
-                                    + EdgeScore.Non_KOL.COMMENT.score() * comment_list.size();
+                  int total_score = EdgeScorer.Non_KOL.QUOTE.score() * quote_list.size()
+                                    + EdgeScorer.Non_KOL.REPOST.score() * repost_list.size()
+                                    + EdgeScorer.Non_KOL.COMMENT.score() * comment_list.size();
 
                   JsonObject edges = new JsonObject();
 
-                  addMultipleByIncrement(edges, quote_list, 1.0f * EdgeScore.Non_KOL.QUOTE.score() / total_score);
-                  addMultipleByIncrement(edges, repost_list, 1.0f * EdgeScore.Non_KOL.REPOST.score() / total_score);
-                  addMultipleByIncrement(edges, comment_list, 1.0f * EdgeScore.Non_KOL.COMMENT.score() / total_score);
+                  addMultipleByIncrement(edges, quote_list, 1.0f * EdgeScorer.Non_KOL.QUOTE.score() / total_score);
+                  addMultipleByIncrement(edges, repost_list, 1.0f * EdgeScorer.Non_KOL.REPOST.score() / total_score);
+                  addMultipleByIncrement(edges, comment_list, 1.0f * EdgeScorer.Non_KOL.COMMENT.score() / total_score);
 
 
                   /// Add edge list to the graph
@@ -300,6 +307,7 @@ public class GraphBuilder {
             }
 
             System.out.println("Total edges created: " + total_edge);
+
 
             /// Write the graph
             CustomJsonWriter.write(graph_data, file_path);

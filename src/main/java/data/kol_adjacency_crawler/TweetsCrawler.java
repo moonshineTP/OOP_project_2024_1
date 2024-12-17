@@ -14,18 +14,17 @@ import org.openqa.selenium.WebElement;
 import data.Crawler;
 import data.Sleeper;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
 /**
  * This class is used to crawl the most recent and useful tweets of a user
  */
-
 public class TweetsCrawler extends Crawler {
       /// ____Constant____ ///
       private static final int SCROLL_LENGTH = 2400;
-      private static final int FAIL_COUNT_LIMIT = 5;
+      private static final int FAIL_COUNT_LIMIT = 3;
 
       /// ____Field____ ///
       private JsonObject tweet_data_jsonObject;
@@ -56,9 +55,8 @@ public class TweetsCrawler extends Crawler {
                   The second loop navigate to each tweet url and crawl its engagement data.
             */
 
-            Set<String> tweet_url_set = new HashSet<>();
+            Set<String> tweet_url_set = new LinkedHashSet<>();
             int fail_count = 0;
-            boolean at_least = false;
             for (int tweet_count = 0; tweet_count < Constant.TWEET_COUNT_LIMIT;) {
                   /// Getting the cell div list
                   List<WebElement> cell_divs = driver.findElements(By.cssSelector(
@@ -66,12 +64,16 @@ public class TweetsCrawler extends Crawler {
                   ));
 
                   /// Loop for cell div
+                  boolean at_least = false;
                   for (WebElement inspected_div: cell_divs) {
                         String url;
                         String author;
 
                         // check if the div is a tweet
                         try {
+                              WebElement tweet = inspected_div.findElement(By.cssSelector(
+                                    "article[data-testid='tweet']"
+                              ));
                               url = inspected_div.findElement(By.xpath
                                     (".//a[contains(@href, '/status/')]"
                               )).getAttribute("href");
@@ -121,7 +123,7 @@ public class TweetsCrawler extends Crawler {
                         )).getAttribute("innerText");
                         int view_count = view.isEmpty() ? 0 : ConvertTwitterCount.convert(view);
                         if (view_count < Constant.MIN_VIEW) {
-                              System.out.println("- Tweet like less than " + Constant.MIN_LIKE +
+                              System.out.println("- Tweet view less than " + Constant.MIN_VIEW +
                                     ". Omit tweet\n");
                               continue;
                         }
@@ -146,29 +148,43 @@ public class TweetsCrawler extends Crawler {
                         tweet_data_jsonObject.add(tweet.id, tweet_jsonObject);
 
                         // finish
+                        System.out.println("- Info crawled successfully\n");
+
                         tweet_url_set.add(url);
                         tweet_count++;
+
                         if (tweet_count == Constant.TWEET_COUNT_LIMIT) break;
-                        System.out.println("- Info crawled successfully\n");
+
                   }
+
 
                   /// Check for failure
                   if (!at_least) {
+                        System.out.println("/// A fail happened");
                         fail_count++;
                         if (fail_count == FAIL_COUNT_LIMIT) break;
+                  } else {
+                        fail_count = 0;
                   }
+
 
                   /// Prepare for the next div
                   js_executor.executeScript("window.scrollBy(0, " + SCROLL_LENGTH + ");");
                   Sleeper.sleep(Constant.BIG_WAIT_TIME);
             }
 
+            System.out.println(tweet_url_set.size());
+
             /*
                   The second loop navigate to each tweet and crawl the tweet engagement
              */
+            System.out.println("/// Crawl adjacency of the tweet list /// \n");
             for (String url: tweet_url_set) {
+                  System.out.println("/// Crawl tweet: " + url);
+
                   driver.navigate().to(url);
                   Sleeper.sleep(Constant.BIG_WAIT_TIME);
+
                   tweet_engagement_crawler.crawl();
             }
 

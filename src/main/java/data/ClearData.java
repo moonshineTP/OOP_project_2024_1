@@ -2,8 +2,8 @@ package data;
 
 import com.google.gson.JsonObject;
 import data.constant.Constant;
-import jsonIO.CustomJsonReader;
-import jsonIO.CustomJsonWriter;
+import json.CustomJsonReader;
+import json.CustomJsonWriter;
 
 public class ClearData {
       public static void main () {

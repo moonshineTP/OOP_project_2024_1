@@ -3,8 +3,8 @@ package data.post_process;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import data.constant.Constant;
-import jsonIO.CustomJsonReader;
-import jsonIO.CustomJsonWriter;
+import json.CustomJsonReader;
+import json.CustomJsonWriter;
 
 import java.util.Iterator;
 import java.util.Map;

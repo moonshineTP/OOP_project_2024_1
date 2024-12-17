@@ -3,7 +3,6 @@ package data.kol_adjacency_crawler;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 
@@ -11,8 +10,6 @@ import data.Crawler;
 import data.constant.Constant;
 import data.Sleeper;
 import graph_element.User;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
@@ -30,6 +27,7 @@ public class TweetEngagementCrawler extends Crawler {
       private JsonObject user_data_jsonObject;
       private WebDriverWait wait;
       private JavascriptExecutor js_executor;
+      private String base_url;
 
       /// ____Constructor____ ///
       public TweetEngagementCrawler (WebDriver driver, Gson gson, JsonObject target_jsonObject,
@@ -42,47 +40,17 @@ public class TweetEngagementCrawler extends Crawler {
 
       /// ____Method____ ///
       public void navigateToQuoteList () {
-            // get the statistic board below the tweet
-            WebElement statistic_board = wait.until(ExpectedConditions.visibilityOfElementLocated(
-                  By.cssSelector("div[class^='css-175oi2r r-1kbdv8c r-18u37iz r-1oszu61 " +
-                        "r-3qxfft r-n7gxbd r-2sztyj r-1efd50x r-5kkj8d r-h3s6tt r-1wtj0ep']")
-            ));
-
-            // get the distance from the board to the top
-            long distance_to_top;
-            Object distance_to_top_object = js_executor.executeScript(
-                  "return arguments[0].getBoundingClientRect().top;", statistic_board);
-            if (distance_to_top_object instanceof Double) {
-                  distance_to_top = ((Double) distance_to_top_object).longValue();
-            } else distance_to_top = (long) distance_to_top_object;
-
-            // scroll exactly to the board
-            js_executor.executeScript("window.scrollBy(0, " + (distance_to_top - 46) + ");");
-            Sleeper.sleep(Constant.MEDIUM_WAIT_TIME);
-
-            // click the quote button
-            js_executor.executeScript("document.elementFromPoint"
-                  + "(arguments[0], arguments[1]).click();", 520, 90);
-            Sleeper.sleep(Constant.MEDIUM_WAIT_TIME);
-
-            // click the view quote
-            wait.until(ExpectedConditions.visibilityOfElementLocated(
-                  By.cssSelector("div[data-testid='Dropdown'] > *:last-child")
-            )).click();
+            driver.navigate().to(base_url + "/quotes");
             Sleeper.sleep(Constant.BIG_WAIT_TIME);
       }
 
-      public void navigateToRepostListFromQuoteList() {
-            js_executor.executeScript("document.elementFromPoint"
-                  + "(arguments[0], arguments[1]).click();", 800, 100);
-            Sleeper.sleep(Constant.MEDIUM_WAIT_TIME);
-            ((JavascriptExecutor) driver).executeScript("window.scrollBy(0, -2000);");
+      public void navigateToRepostList() {
+            driver.navigate().to(base_url + "/retweets");
             Sleeper.sleep(Constant.BIG_WAIT_TIME);
       }
 
-      public void navigateBackToCommentList() {
-            navigateBack();
-            navigateBack();
+      public void navigateToCommentList() {
+            driver.navigate().to(base_url);
             Sleeper.sleep(Constant.BIG_WAIT_TIME);
       }
 
@@ -97,7 +65,10 @@ public class TweetEngagementCrawler extends Crawler {
             Set<String> comment_handle_set = new HashSet<>();
             boolean crawl_state;
 
-            /// navigate to the quote list
+            /// Get the base url;
+            base_url = driver.getCurrentUrl();
+
+            /// Navigate to the quote list
             navigateToQuoteList();
             do { // crawl
                   crawl_state = handle_crawler.crawl(quote_handle_set);
@@ -107,8 +78,9 @@ public class TweetEngagementCrawler extends Crawler {
             // announce the result
             System.out.println("- " + quote_handle_set.size() + " quotes crawled");
 
-            /// navigate to the repost list
-            navigateToRepostListFromQuoteList();
+
+            /// Navigate to the repost list
+            navigateToRepostList();
             do { // crawl
                   crawl_state = handle_crawler.crawl(repost_handle_set);
             } while (crawl_state);
@@ -117,8 +89,9 @@ public class TweetEngagementCrawler extends Crawler {
             // announce the result
             System.out.println("- " + repost_handle_set.size() + " reposts crawled");
 
-            /// navigate back to the tweet
-            navigateBackToCommentList();
+
+            /// Navigate back to the tweet
+            navigateToCommentList();
             int fail_count = 0, max_fail = 3;
             do { // crawl
                   crawl_state = handle_crawler.crawl(comment_handle_set);
@@ -130,12 +103,16 @@ public class TweetEngagementCrawler extends Crawler {
             // announce the result
             System.out.println("- " + comment_handle_set.size() + " comments crawled");
 
+
             /// Push the data to the json objects
             pushData(quote_handle_set, TweetEngagementType.QUOTE);
             pushData(repost_handle_set, TweetEngagementType.REPOST);
             pushData(comment_handle_set, TweetEngagementType.COMMENT);
 
+
             /// Finish
+            System.out.println("- Tweet engagament crawled \n");
+            Sleeper.sleep(Constant.MEDIUM_WAIT_TIME);
             return true;
       }
 

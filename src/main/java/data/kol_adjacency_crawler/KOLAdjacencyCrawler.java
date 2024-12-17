@@ -6,13 +6,11 @@ import com.google.gson.JsonObject;
 import data.ChromeSetup;
 import data.Registrar;
 import data.constant.Constant;
-import jsonIO.CustomJsonReader;
-import jsonIO.CustomJsonWriter;
+import json.CustomJsonReader;
+import json.CustomJsonWriter;
 import org.openqa.selenium.WebDriver;
 
 import data.Crawler;
-
-import java.io.IOException;
 
 
 /**
@@ -35,16 +33,26 @@ public class KOLAdjacencyCrawler extends Crawler {
       }
 
       /// ____Main function____ ///
-      public static void main (String[] args) throws IOException, InterruptedException {
-            /// Initialize crawler
-            WebDriver driver = ChromeSetup.set();
-            Gson gson = new Gson();
-            KOLAdjacencyCrawler crawler = new KOLAdjacencyCrawler(driver, gson,
-                  Constant.USER_DATA_FILE_PATH, Constant.TWEET_DATA_FILE_PATH);
+      public static void main () {
+            boolean not_done_yet = true;
+            while (not_done_yet) {
+                  /// Initialize crawler
+                  WebDriver driver = ChromeSetup.set();
+                  Gson gson = new Gson();
+                  KOLAdjacencyCrawler crawler = new KOLAdjacencyCrawler(driver, gson,
+                        Constant.USER_DATA_FILE_PATH, Constant.TWEET_DATA_FILE_PATH);
 
-            /// Crawl and write data
-            crawler.navigate();
-            crawler.crawl();
+                  /// Crawl and write data
+                  try {
+                        crawler.navigate();
+                        crawler.crawl();
+                  } catch (Exception e) {
+                        continue;
+                  }
+
+                  /// Finish
+                  not_done_yet = false;
+            }
       }
 
 
@@ -80,6 +88,7 @@ public class KOLAdjacencyCrawler extends Crawler {
                   // check if the kol is crawled or not
                   if (kol_jsonObject.get("crawl_state").getAsBoolean()) continue;
 
+                  System.out.println(kol_jsonObject.get("handle").getAsString());
                   // set target for wall crawler
                   kol_wall_crawler.setTarget(kol_jsonObject);
 

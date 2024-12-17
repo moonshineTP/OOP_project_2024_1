@@ -3,7 +3,7 @@ package pagerank;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import jsonIO.CustomJsonReader;
+import json.CustomJsonReader;
 import org.openqa.selenium.json.TypeToken;
 
 import java.util.*;
@@ -23,13 +23,15 @@ public class PageRank {
       }
 
       public static void main () {
-            String file_path = "C:\\Users\\admin\\IdeaProjects\\OOP_project\\untitled\\src\\main\\java\\graph_builder\\Graph_data.json";
+            String file_path = "C:\\Users\\admin\\IdeaProjects\\OOP_project\\untitled\\data\\Graph_data.json";
             JsonObject graph_data = CustomJsonReader.read(file_path);
 
+            System.out.println("/// Loading graph data");
             PageRank pagerank = new PageRank(graph_data);
+            System.out.println("- Loading done\n");
 
             // Params for pagerank
-            long iter = 20000000;
+            long iter = 100000000;
             float damping_factor = 0.85f;
 
             // pagerank
@@ -68,7 +70,7 @@ public class PageRank {
             Random random = new Random();
 
             Vertex vertex = graph.getVertex(random.nextFloat());
-            for (int i = 0; i < iter; i++) {
+            for (int i = 1; i <= iter; i++) {
                   String id = vertex.id;
 
                   if (visit_counter.containsKey(id)) {
@@ -95,6 +97,9 @@ public class PageRank {
                   float edge_seed = random.nextFloat();
                   Edge choosen_edge = graph.getEdge(id, edge_seed);
                   vertex = choosen_edge.target_vertex;
+
+                  // Announce whenever 10 million iterations is done
+                  if (i % 10000000 == 0) System.out.println((i / 1000000) + " million iterations done");
             }
 
             if (total_visit == 0) return null;
