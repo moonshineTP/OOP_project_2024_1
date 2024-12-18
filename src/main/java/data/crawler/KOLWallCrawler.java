@@ -6,7 +6,7 @@ import com.google.gson.JsonObject;
 import data.webtool.Sleeper;
 import org.openqa.selenium.WebDriver;
 
-import data.constant.Constant;
+import data.package_config.Constant;
 
 /**
  * This class is used to crawls all the data of a user's wall

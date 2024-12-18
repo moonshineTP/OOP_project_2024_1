@@ -5,7 +5,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-import data.constant.Constant;
+import data.package_config.Constant;
 import data.webtool.Sleeper;
 
 import java.util.List;

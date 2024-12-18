@@ -6,7 +6,7 @@ import com.google.gson.JsonObject;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 
-import data.constant.Constant;
+import data.package_config.Constant;
 import data.webtool.Sleeper;
 import twitter_element.User;
 import org.openqa.selenium.support.ui.WebDriverWait;

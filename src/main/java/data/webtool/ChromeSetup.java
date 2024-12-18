@@ -1,6 +1,7 @@
 package data.webtool;
 
-import data.constant.Constant;
+import data.package_config.Constant;
+import data.package_config.FilePath;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 
@@ -11,7 +12,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
  */
 public class ChromeSetup {
       public static WebDriver set() {
-            System.setProperty("webdriver.chrome.driver", Constant.CHROMEDRIVER_PATH);
+            System.setProperty("webdriver.chrome.driver", FilePath.CHROMEDRIVER_PATH);
             WebDriver driver = new ChromeDriver();
             driver.manage().window().maximize();
 

@@ -1,6 +1,6 @@
 package data.webtool;
 
-import data.constant.Constant;
+import data.package_config.Constant;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;

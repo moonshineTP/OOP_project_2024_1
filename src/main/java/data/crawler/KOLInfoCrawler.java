@@ -3,6 +3,7 @@ package data.crawler;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import data.package_config.FilePath;
 import data.webtool.ChromeSetup;
 import data.webtool.Registrar;
 import data.webtool.Sleeper;
@@ -17,7 +18,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 import java.util.List;
 
-import data.constant.Constant;
+import data.package_config.Constant;
 import data.converter.ConvertTwitterCount;
 import twitter_element.KOL;
 
@@ -32,7 +33,6 @@ public class KOLInfoCrawler extends Crawler {
       /// ____Main search page____ ///
       private static final String MAIN_URL = "https://x.com/search?q=(blockchain%20OR%20(blockchain%20(%22analyst%22%20OR%20%22expert%22%20OR%20%22enthusiast%22%20OR%20%22advisor%22%20OR%20%22influencer%22%20OR%20%22foundation%22%20OR%20%22institute%22%20OR%20%22network%22%20OR%20%22labs%22%20OR%20%22research%22%20OR%20%22association%22)))%20-%20filter%3Areplies%20min_faves%3A100&src=typed_query&f=user";
 
-
       /// ____Constant____ ///
       // limit constants
       private static final int MAX_PROFILE_PER_SESSION = 14;
@@ -42,21 +42,28 @@ public class KOLInfoCrawler extends Crawler {
       private static final int HEADER_HEIGHT = 107;
       private static final int CRAWL_SESSION_SCROLL_LENGTH = 1300;
 
-
       /// ____More field____ ///
       JavascriptExecutor js_executor;
       WebDriverWait wait;
       Actions mouse;
 
       JsonObject user_data;
+      String user_data_file_path;
 
       /// ____Constructor____ ///
-      public KOLInfoCrawler(WebDriver driver, Gson gson, JsonObject target_jsonObject, JsonObject user_data) {
-            super(driver, gson, target_jsonObject);
-            js_executor = (JavascriptExecutor) driver;
-            wait = new WebDriverWait(driver, Duration.ofMillis(Constant.HUGE_WAIT_TIME));
-            mouse = new Actions(driver);
+      public KOLInfoCrawler(WebDriver driver, Gson gson, String user_data_file_path) {
+            JsonObject user_data = CustomJsonReader.read(FilePath.USER_DATA_FILE_PATH);
+            JsonObject kol_data = user_data.getAsJsonObject("KOL");
+
+            // call the parent constructor for kol_data
+            super(driver, gson, kol_data);
+
+            // set fields
+            this.js_executor = (JavascriptExecutor) driver;
+            this.wait = new WebDriverWait(driver, Duration.ofMillis(Constant.HUGE_WAIT_TIME));
+            this.mouse = new Actions(driver);
             this.user_data = user_data;
+            this.user_data_file_path = user_data_file_path;
       }
 
 
@@ -66,14 +73,10 @@ public class KOLInfoCrawler extends Crawler {
       write it in the json file
        */
       public static void main(String[] args) {
-            /// Read the file
-            JsonObject user_data = CustomJsonReader.read(Constant.USER_DATA_FILE_PATH);
-            JsonObject kol_data = user_data.getAsJsonObject("KOL");
-
             /// Crawl data
             WebDriver driver = ChromeSetup.set();
             Gson gson = new Gson();
-            Crawler crawler = new KOLInfoCrawler(driver, gson, kol_data, user_data);
+            Crawler crawler = new KOLInfoCrawler(driver, gson, FilePath.USER_DATA_FILE_PATH);
 
             crawler.navigate();
             crawler.crawl();
@@ -129,7 +132,7 @@ public class KOLInfoCrawler extends Crawler {
                   int success_count = crawlProfilesData(profiles);
 
                   // Write the file
-                  CustomJsonWriter.write(user_data, Constant.USER_DATA_FILE_PATH);
+                  CustomJsonWriter.write(user_data, user_data_file_path);
 
                   // update KOL_count
                   KOL_count = target_jsonObject.size();

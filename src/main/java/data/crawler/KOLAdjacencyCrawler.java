@@ -3,9 +3,10 @@ package data.crawler;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import data.package_config.FilePath;
 import data.webtool.ChromeSetup;
 import data.webtool.Registrar;
-import data.constant.Constant;
+import data.package_config.Constant;
 import json.CustomJsonReader;
 import json.CustomJsonWriter;
 import org.openqa.selenium.WebDriver;
@@ -38,7 +39,7 @@ public class KOLAdjacencyCrawler extends Crawler {
                   WebDriver driver = ChromeSetup.set();
                   Gson gson = new Gson();
                   KOLAdjacencyCrawler crawler = new KOLAdjacencyCrawler(driver, gson,
-                        Constant.USER_DATA_FILE_PATH, Constant.TWEET_DATA_FILE_PATH);
+                        FilePath.USER_DATA_FILE_PATH, FilePath.TWEET_DATA_FILE_PATH);
 
                   /// Crawl and write data
                   try {

@@ -3,7 +3,7 @@ package data.crawler;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
-import data.constant.Constant;
+import data.package_config.Constant;
 import data.converter.ConvertTwitterCount;
 import twitter_element.Tweet;
 import org.openqa.selenium.By;

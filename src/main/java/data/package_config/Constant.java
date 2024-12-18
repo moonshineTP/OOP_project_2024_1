@@ -1,15 +1,10 @@
-package data.constant;
+package data.package_config;
 
 /**
  * This class defines constants used throughout the file
  */
 
 public class Constant {
-      // file path
-      public static final String CHROMEDRIVER_PATH = "untitled/tool/chromedriver.exe";
-      public static final String USER_DATA_FILE_PATH = "untitled/data/User_data.json";
-      public static final String TWEET_DATA_FILE_PATH = "untitled/data/Tweet_data.json";
-
       // time constants, all in milliseconds
       public static final int HUGE_WAIT_TIME = 7000;
       public static final int BIG_WAIT_TIME = 2300;

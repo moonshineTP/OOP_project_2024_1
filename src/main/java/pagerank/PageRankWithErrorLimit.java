@@ -16,26 +16,34 @@ public class PageRankWithErrorLimit {
             this.pagerank = pagerank;
       }
 
-      private Map<String, Double> rank (double error_limit, float damping_factor) {
+      private Map<String, Double> rank (double error_limit, float damping_factor, boolean is_parallel) {
             long iteration = INITIAL_ITERATION;
             Map<String, Double> rank;
             while (true) {
-                  rank = pagerank.compute(iteration, damping_factor);
+                  System.out.println("Current iteration used: " + iteration);
 
-                  Map<String, Double> rank_2 = pagerank.compute(iteration, damping_factor);
+                  // Compute two pagerank list
+                  rank = pagerank.compute(iteration, damping_factor, true, is_parallel);
+                  Map<String, Double> rank_2 = pagerank.compute(iteration, damping_factor, true, is_parallel);
 
+
+                  // Find the maximum error between them
                   double max_error = 0;
                   for (String id: rank.keySet()) {
                         double diff = Math.abs(rank.get(id) - rank_2.get(id));
                         max_error = Math.max(max_error, diff);
                   }
 
+                  // Print error margin
                   System.out.println("Maximum error: " + max_error);
 
+
+                  // If error is larger than limit, double the iteration and run again
                   if (max_error > error_limit) {
                         System.out.println("Result doesn't diverge. Increase iterations\n");
                         iteration *= 2;
                   }
+                  // Else, break
                   else {
                         System.out.println("Result diverges. Stop checking\n");
                         break;
@@ -55,10 +63,10 @@ public class PageRankWithErrorLimit {
 
 
             /// Compute
-            double acceptable_error_margin = 0.0002d;
+            double acceptable_error_margin = 0.0001d;
 
             long start_time = System.currentTimeMillis();
-            Map<String, Double> score_map = ranker.rank(acceptable_error_margin, 0.85f);
+            Map<String, Double> score_map = ranker.rank(acceptable_error_margin, 0.85f, true);
             long end_time = System.currentTimeMillis();
 
             System.out.println("Total time taken: " + 1.0f * (end_time - start_time) / 1000 + "s");

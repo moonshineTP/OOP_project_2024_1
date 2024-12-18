@@ -44,7 +44,7 @@ public class PageRank {
 
             // pagerank
             long start_time = System.currentTimeMillis();
-            Map<String, Double> score_map = pagerank.compute(iter, damping_factor);
+            Map<String, Double> score_map = pagerank.compute(iter, damping_factor, true, true);
             long end_time = System.currentTimeMillis();
 
             // sort the result in descending order of score
@@ -63,9 +63,88 @@ public class PageRank {
             System.out.println("Total time taken: " + 1.0f * (end_time - start_time) / 1000 + "s");
       }
 
-      public Map<String, Double> compute (long iter, float d) {
-            System.out.println("/// Start computing ///");
+      public Map<String, Double> compute (long iter, float d, boolean print, boolean is_parallel) {
+            if (print) System.out.println("/// Start computing ///");
 
+            /// Get the visit count
+            Map<String, Long> visit_counter;
+            if (is_parallel) {
+                  visit_counter = countVisitParallel(iter, d, print);
+            } else {
+                  visit_counter = countVisit(iter, d, print);
+            }
+
+
+            /// Return result
+            // total_visit for normalization
+            long total_visit = visit_counter.values().stream().mapToLong(Long::longValue).sum();
+
+            // compute result with normalization
+            Map<String, Double> result = new LinkedHashMap<>();
+            for (Map.Entry<String, Long> entry: visit_counter.entrySet()) {
+                  result.put(entry.getKey(), 1.0d * entry.getValue() / total_visit);
+            }
+
+
+            /// Finish
+            System.out.println("/// Computing done\n");
+            return result;
+      }
+
+      private Map<String, Long> countVisitParallel (long iter, float d, boolean print) {
+            int thread_num = Runtime.getRuntime().availableProcessors();
+            long iter_per_thread = iter / thread_num; // the remaining iteration is insignificant
+
+            /// Container for thread results
+            List<Map<String, Long>> partial_results = new ArrayList<>(thread_num);
+
+
+            /// Create and start threads
+            List<Thread> threads = new ArrayList<>();
+            for (int t = 0; t < thread_num; t++) {
+                  Thread thread = new Thread(() -> {
+                        Map<String, Long> local_result = countVisit(iter_per_thread, d, false);
+                        synchronized (partial_results) { // Synchronize only adding to the shared list
+                              partial_results.add(local_result);
+                        }
+                  });
+
+                  threads.add(thread);
+                  thread.start();
+            }
+
+
+            /// Wait for all threads to finish
+            for (Thread thread : threads) {
+                  try {
+                        thread.join();
+                  } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        throw new RuntimeException("Thread interrupted", e);
+                  }
+            }
+
+
+            /// Combine the results from all threads
+            Map<String, Long> visit_counter = new LinkedHashMap<>();
+            for (String targetId : target) {
+                  visit_counter.put(targetId, 0L);
+            }
+            for (Map<String, Long> partial_result : partial_results) {
+                  for (Map.Entry<String, Long> entry : partial_result.entrySet()) {
+                        visit_counter.merge(entry.getKey(), entry.getValue(), Long::sum);
+                  }
+            }
+
+
+            /// Finish
+            if (print) {
+                  System.out.println("Parallel processing complete.");
+            }
+            return visit_counter;
+      }
+
+      private Map<String, Long> countVisit(long iter, float d, boolean print) {
             /// Initialize result
             Map<String, Long> visit_counter = new LinkedHashMap<>();
             int total_visit = 0;
@@ -107,21 +186,13 @@ public class PageRank {
                   vertex = choosen_edge.target_vertex;
 
                   // Announce whenever 10 million iterations is done
-                  if (i % 10000000 == 0) {
-                        System.out.println((i / 1000000) + " million iterations done");
-                  }
+                  if (print && i % 10000000 == 0) System.out.println((i / 1000000) + " million iterations done");
             }
 
-            if (total_visit == 0) return null;
+            /// Handle the case with no visit encountered
+            if (total_visit == 0) throw new RuntimeException("The target set has no visit");
 
-            /// Return result
-            Map<String, Double> result = new LinkedHashMap<>();
-            for (Map.Entry<String, Long> entry: visit_counter.entrySet()) {
-                  result.put(entry.getKey(), 1.0d * entry.getValue() / total_visit);
-            }
 
-            System.out.println("/// Computing done\n");
-
-            return result;
+            return visit_counter;
       }
 }
