@@ -1,5 +1,8 @@
 package data.converter;
 
+/**
+ * This class is used to convert Twitter number format to int
+ */
 public class ConvertTwitterCount {
       public static int convert (String number) {
             if (number.endsWith("K"))

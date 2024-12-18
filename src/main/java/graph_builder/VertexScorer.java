@@ -2,6 +2,11 @@ package graph_builder;
 
 import com.google.gson.JsonObject;
 
+
+/**
+ * This method is used to score vertex types, which method can be implemented at will
+ */
+
 public class VertexScorer {
       private final static float ENGAGE_COEFFICIENT = 10;
       /// Score vertices

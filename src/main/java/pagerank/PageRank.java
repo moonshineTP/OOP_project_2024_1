@@ -5,6 +5,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import json.CustomJsonReader;
 import org.openqa.selenium.json.TypeToken;
+import pagerank.graph_element.Edge;
+import pagerank.graph_element.Graph;
+import pagerank.graph_element.Vertex;
 
 import java.util.*;
 
@@ -31,8 +34,13 @@ public class PageRank {
             System.out.println("- Loading done\n");
 
             // Params for pagerank
-            long iter = 100000000;
-            float damping_factor = 0.85f;
+            Scanner scanner = new Scanner(System.in);
+
+            System.out.print("Enter iteration: ");
+            long iter = scanner.nextLong();
+            System.out.print("Enter damping factor: ");
+            float damping_factor = scanner.nextFloat();
+            System.out.println();
 
             // pagerank
             long start_time = System.currentTimeMillis();
@@ -70,7 +78,7 @@ public class PageRank {
             Random random = new Random();
 
             Vertex vertex = graph.getVertex(random.nextFloat());
-            for (int i = 1; i <= iter; i++) {
+            for (long i = 1; i <= iter; i++) {
                   String id = vertex.id;
 
                   if (visit_counter.containsKey(id)) {
@@ -99,7 +107,9 @@ public class PageRank {
                   vertex = choosen_edge.target_vertex;
 
                   // Announce whenever 10 million iterations is done
-                  if (i % 10000000 == 0) System.out.println((i / 1000000) + " million iterations done");
+                  if (i % 10000000 == 0) {
+                        System.out.println((i / 1000000) + " million iterations done");
+                  }
             }
 
             if (total_visit == 0) return null;
@@ -110,7 +120,8 @@ public class PageRank {
                   result.put(entry.getKey(), 1.0d * entry.getValue() / total_visit);
             }
 
-            System.out.println("/// Computing done");
+            System.out.println("/// Computing done\n");
+
             return result;
       }
 }
