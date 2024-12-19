@@ -24,10 +24,10 @@ public class EdgeScorer {
 
 
       public enum KOLActivityType {
-            FOLLOW(2),
+            FOLLOW(10),
             TWEET(5),
             QUOTE(4),
-            REPOST(1),
+            REPOST(2),
             COMMENT(1);
 
             private final int score;
@@ -43,7 +43,7 @@ public class EdgeScorer {
 
 
       public enum TweetUserRole {
-            AUTHOR(0.5f),
+            AUTHOR(1.0f),
             COMMENT(0.5f);
 
             private final float score;
@@ -76,7 +76,7 @@ public class EdgeScorer {
 
       public enum NonKOLActivityType {
             QUOTE(4),
-            REPOST(1),
+            REPOST(2),
             COMMENT(1);
 
             private final int score;

@@ -24,7 +24,18 @@ public class VertexScorer {
             int comments = tweet.get("comment_count").getAsInt();
             int reposts = tweet.get("repost_count").getAsInt();
 
-            int engages = likes + comments+ reposts;
-            return (float) (1.0f * views * Math.pow(1.0f * views / (views - engages), ENGAGE_COEFFICIENT));
+            // Trọng số cho các loại tương tác
+            float weightLike = 0.5f;
+            float weightComment = 1.0f;
+            float weightRepost = 1.5f;
+
+            // Engagement Score với trọng số
+            float weightedEngagement = weightLike * likes + weightComment * comments + weightRepost * reposts;
+
+            // Tỷ lệ tương tác (Engagement Rate)
+            float engagementRate = weightedEngagement / views;
+
+            // Công thức tính điểm (chuẩn hóa với log để tránh outliers)
+            return (float) (views * Math.log(1 + weightedEngagement) * engagementRate);
       }
 }
