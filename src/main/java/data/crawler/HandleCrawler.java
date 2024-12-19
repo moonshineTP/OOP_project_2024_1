@@ -19,11 +19,9 @@ import java.util.Set;
 class HandleCrawler {
       private final int SCROLL_LENGTH = 2400;
       private WebDriver driver;
-      private JavascriptExecutor js_executor;
 
       public HandleCrawler (WebDriver driver) {
             this.driver = driver;
-            this.js_executor = (JavascriptExecutor) driver;
       }
 
       public boolean crawl (Set<String> handle_set) {
@@ -38,7 +36,7 @@ class HandleCrawler {
                   try{
                         if (Integer.parseInt(inspected_div.getAttribute("offsetHeight")) == 0) continue;
                   } catch (Exception e) {
-                        break;
+                        continue;
                   }
 
                   // extract handle div, break if the div is a header
@@ -57,11 +55,11 @@ class HandleCrawler {
             }
             int new_size = handle_set.size();
 
-            /// If the size doesn't change, return false
-            if (new_size == old_size) return false;
-
             /// Scroll to load the next divs
             ((JavascriptExecutor) driver).executeScript("window.scrollBy(0, " + SCROLL_LENGTH + ");");
+
+            /// If the size doesn't change, return false
+            if (new_size == old_size) return false;
 
             /// Finish
             Sleeper.sleep(Constant.BIG_WAIT_TIME);
