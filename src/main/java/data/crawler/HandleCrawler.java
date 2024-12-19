@@ -6,7 +6,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 import data.package_config.Constant;
-import data.webtool.Sleeper;
+import data.util.Sleeper;
 
 import java.util.List;
 import java.util.Set;

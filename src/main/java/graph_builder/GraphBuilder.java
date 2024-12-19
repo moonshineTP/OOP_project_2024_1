@@ -267,12 +267,8 @@ public class GraphBuilder {
                   float non_kol_score = EdgeScorer.TweetUserRole.COMMENT.ratio() * raw_non_kol_score / total_score;
 
                   // add edges by its score
-                  for (String handle: kol_commenter_list) {
-                        addMultipleByIncrement(edges, kol_commenter_list, kol_score);
-                  }
-                  for (String handle : non_kol_commenter_list) {
-                      addMultipleByIncrement(edges, non_kol_commenter_list, non_kol_score);
-                  }
+                  addMultipleByIncrement(edges, kol_commenter_list, kol_score);
+                  addMultipleByIncrement(edges, non_kol_commenter_list, non_kol_score);
 
 
                   /// Add edges to vertex

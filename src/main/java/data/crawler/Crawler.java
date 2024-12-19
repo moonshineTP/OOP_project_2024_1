@@ -3,7 +3,7 @@ package data.crawler;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import data.package_config.Constant;
-import data.webtool.Sleeper;
+import data.util.Sleeper;
 import org.openqa.selenium.WebDriver;
 
 /**

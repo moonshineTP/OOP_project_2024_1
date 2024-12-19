@@ -56,7 +56,7 @@ public class PageRankWithErrorLimit {
 
       public static void main () {
             /// Initialize pagerank
-            String file_path = "C:\\Users\\admin\\IdeaProjects\\OOP_project\\untitled\\data\\Graph_data.json";
+            String file_path = "./data/Graph_data.json";
             JsonObject graph_data = CustomJsonReader.read(file_path);
             PageRank pagerank = new PageRank(graph_data);
             PageRankWithErrorLimit ranker = new PageRankWithErrorLimit(pagerank);

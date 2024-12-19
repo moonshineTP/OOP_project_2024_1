@@ -5,9 +5,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import json.CustomJsonReader;
 import org.openqa.selenium.json.TypeToken;
-import pagerank.graph_element.Edge;
-import pagerank.graph_element.Graph;
-import pagerank.graph_element.Vertex;
+import pagerank.graph_model.Edge;
+import pagerank.graph_model.Graph;
+import pagerank.graph_model.Vertex;
 
 import java.util.*;
 
@@ -26,7 +26,7 @@ public class PageRank {
       }
 
       public static void main () {
-            String file_path = "C:\\Users\\admin\\IdeaProjects\\OOP_project\\untitled\\data\\Graph_data.json";
+            String file_path = "untitled/data/Graph_data.json";
             JsonObject graph_data = CustomJsonReader.read(file_path);
 
             System.out.println("/// Loading graph data");

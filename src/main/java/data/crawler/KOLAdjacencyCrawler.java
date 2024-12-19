@@ -4,8 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import data.package_config.FilePath;
-import data.webtool.ChromeSetup;
-import data.webtool.Registrar;
+import data.util.ChromeSetup;
+import data.util.Registrar;
 import data.package_config.Constant;
 import json.CustomJsonReader;
 import json.CustomJsonWriter;

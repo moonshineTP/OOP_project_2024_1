@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class DataFilterer {
       public static void main () {
-            /// Example code
+            /// Example code, change as your will
             DataFilterer filterer = new DataFilterer();
             filterer.filterKOLByFollower(20000);
       }

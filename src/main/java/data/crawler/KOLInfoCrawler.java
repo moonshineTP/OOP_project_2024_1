@@ -4,9 +4,9 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import data.package_config.FilePath;
-import data.webtool.ChromeSetup;
-import data.webtool.Registrar;
-import data.webtool.Sleeper;
+import data.util.ChromeSetup;
+import data.util.Registrar;
+import data.util.Sleeper;
 import json.CustomJsonReader;
 import json.CustomJsonWriter;
 import org.openqa.selenium.*;
@@ -19,8 +19,8 @@ import java.time.Duration;
 import java.util.List;
 
 import data.package_config.Constant;
-import data.converter.ConvertTwitterCount;
-import twitter_element.KOL;
+import data.util.ConvertTwitterCount;
+import twitter_model.KOL;
 
 
 /**

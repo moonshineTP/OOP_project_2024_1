@@ -28,6 +28,5 @@ public class CustomJsonWriter {
                   e.printStackTrace();
                   throw new RuntimeException(e);
             }
-
       }
 }

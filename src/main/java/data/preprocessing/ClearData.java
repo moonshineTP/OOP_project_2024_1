@@ -1,7 +1,6 @@
 package data.preprocessing;
 
 import com.google.gson.JsonObject;
-import data.package_config.Constant;
 import data.package_config.FilePath;
 import json.CustomJsonReader;
 import json.CustomJsonWriter;

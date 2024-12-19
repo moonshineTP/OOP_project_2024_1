@@ -7,8 +7,8 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 
 import data.package_config.Constant;
-import data.webtool.Sleeper;
-import twitter_element.User;
+import data.util.Sleeper;
+import twitter_model.User;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
@@ -144,6 +144,12 @@ public class TweetEngagementCrawler extends Crawler {
                                                       case COMMENT -> "comment_tweet_id_list";  };
                   user_jsonObject.get(list_type).getAsJsonArray().add(id);
             }
+      }
+
+      enum TweetEngagementType {
+            QUOTE,
+            REPOST,
+            COMMENT,
       }
 }
 

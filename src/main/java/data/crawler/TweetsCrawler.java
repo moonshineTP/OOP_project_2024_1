@@ -4,14 +4,14 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import data.package_config.Constant;
-import data.converter.ConvertTwitterCount;
-import twitter_element.Tweet;
+import data.util.ConvertTwitterCount;
+import twitter_model.Tweet;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-import data.webtool.Sleeper;
+import data.util.Sleeper;
 
 import java.util.LinkedHashSet;
 import java.util.List;
