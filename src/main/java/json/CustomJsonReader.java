@@ -16,7 +16,7 @@ public class CustomJsonReader {
                   return jsonObject;
             } catch (IOException e) {
                   e.printStackTrace();
-                  throw new RuntimeException(STR."File \{json_file_path} read unsuccessfully");
+                  throw new RuntimeException("File " + json_file_path + " read unsuccessfully");
             }
       }
 }

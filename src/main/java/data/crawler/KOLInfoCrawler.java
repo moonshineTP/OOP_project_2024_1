@@ -119,7 +119,7 @@ public class KOLInfoCrawler extends Crawler {
 
             for (int KOL_count = 0; KOL_count < Constant.KOL_COUNT_LIMIT; ) {
                   // print current session info
-                  System.out.println(STR."/// Session \{session_count} ///");
+                  System.out.println("/// Session " + session_count + " ///");
                   session_count++;
 
                   /// Get data
@@ -138,8 +138,8 @@ public class KOLInfoCrawler extends Crawler {
                   KOL_count = target_jsonObject.size();
 
                   // print search result
-                  System.out.println(STR."KOLS retrieved this session: \{success_count}");
-                  System.out.println(STR."KOLs retrieved so far: \{KOL_count}");
+                  System.out.println("KOLS retrieved this session: " + success_count);
+                  System.out.println("KOLs retrieved so far: " + KOL_count);
                   System.out.println();
 
                   /// Condition check
@@ -162,7 +162,7 @@ public class KOLInfoCrawler extends Crawler {
                   }
 
                   /// scroll down to load the next divs for the next crawl session
-                  js_executor.executeScript(STR."window.scrollBy(0, \{CRAWL_SESSION_SCROLL_LENGTH});");
+                  js_executor.executeScript("window.scrollBy(0, " + CRAWL_SESSION_SCROLL_LENGTH + ");");
 
                   /// Sleep a little bit
                   Sleeper.sleep(Constant.MEDIUM_WAIT_TIME);
@@ -188,7 +188,7 @@ public class KOLInfoCrawler extends Crawler {
                               (long) js_executor.executeScript("return " +
                                     "arguments[0].getBoundingClientRect().top;", profile);
                         // scroll it to place it right under the header
-                        js_executor.executeScript(STR."window.scrollBy(0, \{distance_to_top - HEADER_HEIGHT});");
+                        js_executor.executeScript("window.scrollBy(0, " + (distance_to_top - HEADER_HEIGHT) + ");");
                   }
 
                   /// Crawl and push the data of the current profile
